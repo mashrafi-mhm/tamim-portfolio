@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MD. Naimur Rahman Tamim • Official</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system','BlinkMacSystemFont','"SF Pro Display"','"SF Pro Text"','"Inter"','sans-serif'],
+          },
+          colors: {
+            appleBg: '#000000',
+            appleGrayBg: '#161617',
+            appleCardBg: '#101012',
+            appleText: '#f5f5f7',
+            appleSubtext: '#86868b',
+            appleBlue: '#2997ff',
+            appleTeal: '#30d5c8',
+            appleTealDim: '#1a7a75',
+            appleNavy: '#0a1628',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+    html { background: #000; color: #f5f5f7; }
+    body { background: #000; overflow-x: hidden; }
+
+    #webgl-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0; outline: none; pointer-events: none;
+    }
+
+    .apple-global-nav {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      height: 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .apple-nav-link {
+      color: #cecece; font-size: 12px; font-weight: 400;
+      letter-spacing: -0.01em; transition: color 0.25s; white-space: nowrap;
+    }
+    .apple-nav-link:hover { color: #fff; }
+
+    .apple-billboard { background: #000; position: relative; overflow: hidden; margin-bottom: 12px; }
+
+    .apple-card {
+      background: #0d1117;
+      border-radius: 20px; overflow: hidden; position: relative;
+      transform: translateZ(0); -webkit-transform: translateZ(0);
+      backface-visibility: hidden; will-change: transform;
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+      border: 1px solid rgba(48,213,200,0.1);
+    }
+    .apple-card:hover {
+      transform: scale(1.008) translateZ(0);
+      box-shadow: 0 20px 60px rgba(48,213,200,0.12);
+    }
+
+    /* Admin only hidden by default */
+    [data-admin-only] { display: none !important; }
+    body.is-owner-mode [data-admin-only] { display: flex !important; }
+    body.is-owner-mode button[data-admin-only] { display: inline-flex !important; }
+
+    .teal-btn {
+      background: linear-gradient(135deg, #0d7a74, #30d5c8);
+      color: #fff; font-size: 14px; font-weight: 600;
+      padding: 10px 22px; border-radius: 980px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .teal-btn:hover { opacity: 0.88; transform: scale(1.02); }
+
+    .ghost-btn {
+      background: transparent; color: #30d5c8;
+      border: 1px solid #30d5c8; font-size: 14px; font-weight: 400;
+      padding: 9px 20px; border-radius: 980px;
+      transition: all 0.2s;
+    }
+    .ghost-btn:hover { background: #30d5c8; color: #000; }
+
+    .headline-large {
+      font-size: clamp(36px, 7vw, 76px);
+      font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
+    }
+    .headline-sub {
+      font-size: clamp(16px, 3vw, 24px);
+      font-weight: 400; letter-spacing: -0.01em; color: #f5f5f7;
+    }
+
+    /* Pill tags */
+    .role-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 980px;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.01em;
+      border: 1px solid rgba(48,213,200,0.3);
+      background: rgba(48,213,200,0.08);
+      color: #30d5c8;
+    }
+
+    /* Stat cards */
+    .stat-card {
+      background: #0d1117; border-radius: 16px;
+      padding: 20px; border: 1px solid rgba(48,213,200,0.15);
+      text-align: center;
+    }
+
+    /* Photo slot */
+    .photo-slot {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .photo-wrapper:hover .photo-slot { transform: scale(1.05); }
+
+    /* Timeline */
+    .timeline-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #30d5c8; flex-shrink: 0; margin-top: 4px;
+      box-shadow: 0 0 12px rgba(48,213,200,0.6);
+    }
+
+    /* Mobile nav strip */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .footer-heading { font-size: 12px; font-weight: 600; color: #f5f5f7; margin-bottom: 10px; }
+    .footer-link { font-size: 12px; color: #86868b; display: block; margin-bottom: 8px; transition: color 0.2s; }
+    .footer-link:hover { color: #f5f5f7; text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .apple-card:hover { transform: none; box-shadow: none; }
+      @media (hover: none) { .apple-card:hover { transform: none; } }
+    }
+
+    /* Guestbook */
+    .gb-input {
+      width: 100%; background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
+      padding: 12px 16px; color: #fff; font-size: 14px;
+      margin-bottom: 12px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .gb-input:focus { border-color: #30d5c8; }
+    .gb-input::placeholder { color: #86868b; }
+  </style>
+</head>
+<body>
+
+  <!-- 3D WebGL Background -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Lightbox -->
+  <div id="photoLightbox" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl hidden flex items-center justify-center p-4">
+    <button onclick="closeLightbox()" class="absolute top-6 right-6 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all z-20">✕</button>
+    <button onclick="prevLightbox()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-2xl hover:bg-white/20 z-20">‹</button>
+    <button onclick="nextLightbox()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-2xl hover:bg-white/20 z-20">›</button>
+    <div class="max-w-4xl w-full text-center">
+      <img id="lbImg" src="" alt="" class="max-h-[80vh] mx-auto rounded-3xl object-contain shadow-2xl border border-white/10">
+      <h3 id="lbTitle" class="text-white text-lg font-semibold mt-4"></h3>
+      <p id="lbSub" class="text-appleSubtext text-xs mt-1"></p>
+    </div>
+  </div>
+
+  <!-- Hidden photo input (admin) -->
+  <input type="file" id="photoReplacerInput" accept="image/*" class="hidden" onchange="executePhotoReplacement(event)">
+
+  <!-- Main content layer -->
+  <div class="relative z-10 flex flex-col min-h-screen">
+
+    <!-- HEADER -->
+    <header class="w-full apple-global-nav sticky top-0 z-40 flex flex-col justify-center">
+      <div class="max-w-[1024px] mx-auto w-full px-4 flex items-center justify-between h-12">
+        <a href="#hero" class="text-xs font-semibold text-white tracking-tight hover:opacity-75 transition-opacity">
+          MD. Naimur Rahman Tamim
+        </a>
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center space-x-7">
+          <a href="#hero" class="apple-nav-link">Overview</a>
+          <a href="#about" class="apple-nav-link">About</a>
+          <a href="#journey" class="apple-nav-link">Journey</a>
+          <a href="#business" class="apple-nav-link">Business</a>
+          <a href="#medical" class="apple-nav-link">Medical</a>
+          <a href="#contact" class="apple-nav-link">Contact</a>
+        </nav>
+        <!-- Contact link -->
+        <a href="#contact" class="text-xs text-[#30d5c8] hover:text-white transition-colors flex items-center gap-1.5 font-medium">
+          <span>Contact</span>
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </a>
+      </div>
+      <!-- Mobile nav strip -->
+      <div class="flex md:hidden overflow-x-auto no-scrollbar px-4 py-2 border-t border-white/5 space-x-5 bg-black/90 text-xs">
+        <a href="#hero" class="apple-nav-link whitespace-nowrap">Overview</a>
+        <a href="#about" class="apple-nav-link whitespace-nowrap">About</a>
+        <a href="#journey" class="apple-nav-link whitespace-nowrap">Journey</a>
+        <a href="#business" class="apple-nav-link whitespace-nowrap">Business</a>
+        <a href="#medical" class="apple-nav-link whitespace-nowrap">Medical</a>
+        <a href="#contact" class="apple-nav-link whitespace-nowrap">Contact</a>
+      </div>
+    </header>
+
+    <!-- Sub-ribbon -->
+    <div class="w-full bg-[#0a1628] py-2.5 text-center text-xs text-[#30d5c8] border-b border-[#30d5c8]/10">
+      Welcome to the official page of MD. Naimur Rahman Tamim — Businessman · Trader · Future Cardiologist
+    </div>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="hero" class="apple-billboard pt-16 pb-10 text-center flex flex-col items-center">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+          <span class="role-pill">💼 Businessman</span>
+          <span class="role-pill">📈 Trader</span>
+          <span class="role-pill">🩺 MBBS Candidate</span>
+          <span class="role-pill">❤️ Future Cardiologist</span>
+        </div>
+
+        <h1 class="headline-large text-white mb-3">
+          MD. Naimur Rahman<br>
+          <span class="text-[#30d5c8]">Tamim.</span>
+        </h1>
+
+        <p class="headline-sub text-[#86868b] mb-8 font-normal max-w-2xl mx-auto">
+          Entrepreneur. Trader. MBBS Candidate.<br>Working hard every day to become a Cardiologist.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+          <a href="#journey" class="teal-btn">Explore Journey</a>
+          <a href="#contact" class="ghost-btn">Contact</a>
+        </div>
+
+        <!-- Hero Photo -->
+        <div class="relative max-w-2xl mx-auto rounded-3xl overflow-hidden shadow-2xl cursor-pointer photo-wrapper group" onclick="openLightbox(0)">
+          <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
+            <button onclick="triggerPhotoReplace('hero','heroImg',0,event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+          </div>
+          <div class="h-[380px] sm:h-[520px] w-full relative bg-gradient-to-br from-[#0a1628] to-[#000]">
+            <img id="heroImg" src="assets/photos/hero.jpg" alt="MD. Naimur Rahman Tamim"
+              class="photo-slot"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <!-- Placeholder if no photo -->
+            <div style="display:flex" class="absolute inset-0 flex-col items-center justify-center gap-4">
+              <div class="w-32 h-32 rounded-full bg-gradient-to-br from-[#30d5c8]/30 to-[#0d7a74]/30 border-2 border-[#30d5c8]/40 flex items-center justify-center">
+                <span class="text-5xl">🩺</span>
+              </div>
+              <p class="text-[#30d5c8] text-sm font-mono opacity-60">Add your photo in Developer Mode</p>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent"></div>
+            <div class="absolute bottom-8 left-8 right-8 text-left">
+              <h3 id="heroTitle" class="text-2xl sm:text-3xl font-bold text-white">MD. Naimur Rahman Tamim</h3>
+              <p class="text-[#30d5c8] text-sm mt-1 font-mono">Businessman · MBBS Candidate · Future Cardiologist</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section id="about" class="py-16 md:py-24 bg-[#000] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4">
+        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Who He Is</span>
+        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-12 tracking-tight">About Tamim.</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Left: Bio card -->
+          <div class="apple-card p-7">
+            <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
+              <button onclick="editText('aboutBio',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+            </div>
+            <div class="w-16 h-16 rounded-2xl bg-[#30d5c8]/10 border border-[#30d5c8]/30 flex items-center justify-center mb-5 text-3xl">👨‍⚕️</div>
+            <h3 class="text-white font-bold text-xl mb-3">The Visionary</h3>
+            <p id="aboutBio" class="text-[#86868b] text-sm leading-relaxed">
+              MD. Naimur Rahman Tamim is a driven entrepreneur, active trader, and dedicated MBBS candidate. With a rare combination of business acumen and medical passion, he is on a mission to become a world-class Cardiologist — healing hearts while building empires.
+            </p>
+          </div>
+
+          <!-- Right: Stats grid -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="stat-card">
+              <div class="text-3xl font-black text-[#30d5c8] mb-1">MBBS</div>
+              <div class="text-[#86868b] text-xs uppercase tracking-widest">Candidate</div>
+            </div>
+            <div class="stat-card">
+              <div class="text-3xl font-black text-[#30d5c8] mb-1">❤️</div>
+              <div class="text-[#86868b] text-xs uppercase tracking-widest">Cardiology</div>
+            </div>
+            <div class="stat-card">
+              <div class="text-3xl font-black text-[#30d5c8] mb-1">📈</div>
+              <div class="text-[#86868b] text-xs uppercase tracking-widest">Trader</div>
+            </div>
+            <div class="stat-card">
+              <div class="text-3xl font-black text-[#30d5c8] mb-1">💼</div>
+              <div class="text-[#86868b] text-xs uppercase tracking-widest">Businessman</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          <div class="apple-card overflow-hidden photo-wrapper cursor-pointer h-56 group" onclick="openLightbox(1)">
+            <div data-admin-only class="absolute top-3 right-3 z-30 items-center gap-1">
+              <button onclick="triggerPhotoReplace('p1','aboutImg1',1,event)" class="px-2 py-1 rounded-full bg-black/80 text-white text-xs border border-white/20">📷</button>
+            </div>
+            <img id="aboutImg1" src="assets/photos/about-1.jpg" alt="Tamim"
+              class="photo-slot h-full w-full object-cover"
+              onerror="this.parentElement.style.background='linear-gradient(135deg,#0a1628,#0d1117)'; this.style.display='none'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4">
+              <p class="text-white text-xs font-semibold" id="aboutImg1Title">Business Life</p>
+            </div>
+          </div>
+          <div class="apple-card overflow-hidden photo-wrapper cursor-pointer h-56 group" onclick="openLightbox(2)">
+            <div data-admin-only class="absolute top-3 right-3 z-30 items-center gap-1">
+              <button onclick="triggerPhotoReplace('p2','aboutImg2',2,event)" class="px-2 py-1 rounded-full bg-black/80 text-white text-xs border border-white/20">📷</button>
+            </div>
+            <img id="aboutImg2" src="assets/photos/about-2.jpg" alt="Tamim"
+              class="photo-slot h-full w-full object-cover"
+              onerror="this.parentElement.style.background='linear-gradient(135deg,#0a1628,#0d1117)'; this.style.display='none'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4">
+              <p class="text-white text-xs font-semibold" id="aboutImg2Title">Medical Studies</p>
+            </div>
+          </div>
+          <div class="apple-card overflow-hidden photo-wrapper cursor-pointer h-56 group" onclick="openLightbox(3)">
+            <div data-admin-only class="absolute top-3 right-3 z-30 items-center gap-1">
+              <button onclick="triggerPhotoReplace('p3','aboutImg3',3,event)" class="px-2 py-1 rounded-full bg-black/80 text-white text-xs border border-white/20">📷</button>
+            </div>
+            <img id="aboutImg3" src="assets/photos/about-3.jpg" alt="Tamim"
+              class="photo-slot h-full w-full object-cover"
+              onerror="this.parentElement.style.background='linear-gradient(135deg,#0a1628,#0d1117)'; this.style.display='none'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-4 left-4">
+              <p class="text-white text-xs font-semibold" id="aboutImg3Title">Trading & Markets</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== JOURNEY (TIMELINE) ===================== -->
+    <section id="journey" class="py-16 md:py-24 bg-[#050810] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4">
+        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">The Road Ahead</span>
+        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-12 tracking-tight">His Journey.</h2>
+
+        <div class="apple-card p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#30d5c8]/3 blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+          <div class="space-y-8 relative z-10">
+
+            <div class="flex gap-5">
+              <div class="flex flex-col items-center">
+                <div class="timeline-dot"></div>
+                <div class="w-px flex-1 bg-gradient-to-b from-[#30d5c8]/40 to-transparent mt-2"></div>
+              </div>
+              <div class="pb-6">
+                <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest">Present</span>
+                <h3 class="text-white font-bold text-lg mt-1">MBBS Candidate</h3>
+                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">Currently pursuing MBBS with a burning passion for medicine. Every lecture, every lab session — one step closer to the operating room.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-5">
+              <div class="flex flex-col items-center">
+                <div class="timeline-dot"></div>
+                <div class="w-px flex-1 bg-gradient-to-b from-[#30d5c8]/40 to-transparent mt-2"></div>
+              </div>
+              <div class="pb-6">
+                <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest">Ongoing</span>
+                <h3 class="text-white font-bold text-lg mt-1">Businessman & Trader</h3>
+                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">Actively running businesses and trading in financial markets. Building financial independence while funding his medical dream.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-5">
+              <div class="flex flex-col items-center">
+                <div class="timeline-dot opacity-50"></div>
+                <div class="w-px flex-1 bg-gradient-to-b from-[#30d5c8]/20 to-transparent mt-2"></div>
+              </div>
+              <div class="pb-6">
+                <span class="text-xs font-mono text-[#86868b] uppercase tracking-widest">Goal</span>
+                <h3 class="text-white font-bold text-lg mt-1">Cardiologist</h3>
+                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">The ultimate dream — to specialize in Cardiology and save lives. Working relentlessly each day to make this a reality.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-5">
+              <div class="flex flex-col items-center">
+                <div class="timeline-dot opacity-30"></div>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-[#86868b] uppercase tracking-widest">Vision</span>
+                <h3 class="text-white font-bold text-lg mt-1">Doctor & Entrepreneur</h3>
+                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">To build a healthcare empire — combining the precision of a cardiologist with the vision of a successful entrepreneur.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BUSINESS ===================== -->
+    <section id="business" class="py-16 md:py-24 bg-[#000] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4">
+        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Enterprise</span>
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <h2 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Business & Trading.</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <!-- Business card -->
+          <div class="apple-card p-7 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 rounded-full bg-[#30d5c8]/5 blur-2xl"></div>
+            <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
+              <button onclick="editText('businessDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+            </div>
+            <div class="text-4xl mb-4">💼</div>
+            <h3 class="text-white font-bold text-xl mb-2">Businessman</h3>
+            <p id="businessDesc" class="text-[#86868b] text-sm leading-relaxed mb-5">
+              A sharp entrepreneurial mind driving multiple business ventures. From sourcing opportunities to closing deals — Tamim brings vision and execution together.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="role-pill text-xs">Strategy</span>
+              <span class="role-pill text-xs">Networking</span>
+              <span class="role-pill text-xs">Operations</span>
+            </div>
+          </div>
+
+          <!-- Trading card -->
+          <div class="apple-card p-7 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 rounded-full bg-blue-500/5 blur-2xl"></div>
+            <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
+              <button onclick="editText('tradingDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+            </div>
+            <div class="text-4xl mb-4">📈</div>
+            <h3 class="text-white font-bold text-xl mb-2">Trader</h3>
+            <p id="tradingDesc" class="text-[#86868b] text-sm leading-relaxed mb-5">
+              Active in financial markets with a data-driven approach. Reading charts, managing risk, and capitalizing on opportunities — trading is both discipline and art for Tamim.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="role-pill text-xs">Market Analysis</span>
+              <span class="role-pill text-xs">Risk Management</span>
+              <span class="role-pill text-xs">Forex / Stocks</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== MEDICAL ===================== -->
+    <section id="medical" class="py-16 md:py-24 bg-[#050810] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4">
+        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Medicine</span>
+        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-10 tracking-tight">Medical Pursuit.</h2>
+
+        <!-- Big medical card -->
+        <div class="apple-card p-8 sm:p-12 relative overflow-hidden mb-5">
+          <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#30d5c8]/5 blur-3xl"></div>
+          <div class="relative z-10 flex flex-col md:flex-row items-start gap-8">
+            <div class="flex-shrink-0">
+              <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-[#30d5c8]/20 to-[#0d7a74]/20 border border-[#30d5c8]/30 flex items-center justify-center text-5xl shadow-2xl">
+                ❤️
+              </div>
+            </div>
+            <div class="flex-1">
+              <div data-admin-only class="absolute top-0 right-0 items-center gap-2">
+                <button onclick="editText('medicalDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+              </div>
+              <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest">MBBS → Cardiology</span>
+              <h3 id="medicalTitle" class="text-white font-bold text-2xl sm:text-3xl mt-2 mb-3">Future Cardiologist</h3>
+              <p id="medicalDesc" class="text-[#86868b] text-sm sm:text-base leading-relaxed mb-6">
+                Cardiology is not just a specialization — it is a calling. MD. Naimur Rahman Tamim is committed to mastering the science of the heart, dedicating years of hard work, sleepless nights, and relentless study to become a skilled Cardiologist who can save lives.
+              </p>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div class="bg-black/40 rounded-xl p-3 border border-white/5">
+                  <div class="text-[#30d5c8] font-bold text-sm">MBBS</div>
+                  <div class="text-[#86868b] text-xs mt-0.5">In Progress</div>
+                </div>
+                <div class="bg-black/40 rounded-xl p-3 border border-white/5">
+                  <div class="text-[#30d5c8] font-bold text-sm">Cardiology</div>
+                  <div class="text-[#86868b] text-xs mt-0.5">Specialization Goal</div>
+                </div>
+                <div class="bg-black/40 rounded-xl p-3 border border-white/5">
+                  <div class="text-[#30d5c8] font-bold text-sm">Hard Work</div>
+                  <div class="text-[#86868b] text-xs mt-0.5">Every Single Day</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote card -->
+        <div class="apple-card p-8 sm:p-10 text-center relative overflow-hidden">
+          <span class="text-6xl text-[#30d5c8]/20 font-serif absolute top-4 left-6 select-none">"</span>
+          <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
+            <button onclick="editText('quoteText',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+          </div>
+          <p id="quoteText" class="text-xl sm:text-2xl text-white font-bold leading-relaxed mb-6 font-sans tracking-tight relative z-10">
+            "I am not just studying medicine — I am preparing to save lives. Business funds my journey, trading sharpens my mind, and Cardiology is my destiny."
+          </p>
+          <p class="text-[#30d5c8] text-sm font-mono">— MD. Naimur Rahman Tamim</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT ===================== -->
+    <section id="contact" class="py-16 md:py-24 bg-[#000] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4">
+        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Get in Touch</span>
+        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-10 tracking-tight">Contact.</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <!-- Phone -->
+          <div class="apple-card p-7">
+            <div class="text-3xl mb-4">📞</div>
+            <h3 class="text-white font-bold text-lg mb-2">Phone</h3>
+            <p class="text-[#86868b] text-sm mb-4">Call or WhatsApp directly</p>
+            <div class="flex items-center gap-3">
+              <span id="phoneNumber" class="text-[#30d5c8] text-xl font-bold font-mono">01315471934</span>
+              <button onclick="copyPhone()" class="ghost-btn text-xs py-1.5 px-3">Copy</button>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <a href="tel:01315471934" class="teal-btn text-xs py-2 px-4">📞 Call</a>
+              <a href="https://wa.me/8801315471934" target="_blank" class="ghost-btn text-xs py-2 px-4">💬 WhatsApp</a>
+            </div>
+          </div>
+
+          <!-- Business inquiry -->
+          <div class="apple-card p-7">
+            <div class="text-3xl mb-4">💼</div>
+            <h3 class="text-white font-bold text-lg mb-2">Business Inquiry</h3>
+            <p id="contactDesc" class="text-[#86868b] text-sm leading-relaxed mb-5">
+              For business partnerships, trading collaboration, or medical consultations — reach out directly. Always open to meaningful opportunities.
+            </p>
+            <div data-admin-only class="items-center gap-2">
+              <button onclick="editText('contactDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit Text</button>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span class="role-pill text-xs">Business Partnership</span>
+              <span class="role-pill text-xs">Trading</span>
+              <span class="role-pill text-xs">Medical</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SIGN GUESTBOOK ===================== -->
+    <section class="py-12 bg-[#050810] border-t border-white/10">
+      <div class="max-w-lg mx-auto px-4 text-center">
+        <h3 class="text-white font-bold text-xl mb-1">✍️ Sign the Guestbook</h3>
+        <p class="text-[#86868b] text-xs mb-6">Leave your name & email — Tamim will see who visited</p>
+        <div class="apple-card p-6 text-left">
+          <input id="gbName" type="text" placeholder="Your Name" maxlength="50" class="gb-input" />
+          <input id="gbEmail" type="email" placeholder="Your Email (e.g. example@gmail.com)" maxlength="80" class="gb-input" />
+          <input id="gbMessage" type="text" placeholder="A short message (optional)" maxlength="100" class="gb-input" />
+          <button onclick="submitGuestbook()" class="w-full teal-btn py-3 font-semibold">Submit ✓</button>
+          <div id="gbSuccess" class="hidden mt-3 text-center text-emerald-400 text-sm font-semibold">✅ Thank you! Your entry has been saved.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="w-full bg-[#0a0a0c] text-[#86868b] text-[11px] pt-8 pb-12 border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 py-4 border-b border-white/10">
+          <div>
+            <h4 class="footer-heading">Pages</h4>
+            <a href="#hero" class="footer-link">Overview</a>
+            <a href="#about" class="footer-link">About</a>
+            <a href="#journey" class="footer-link">Journey</a>
+          </div>
+          <div>
+            <h4 class="footer-heading">Work</h4>
+            <a href="#business" class="footer-link">Business</a>
+            <a href="#business" class="footer-link">Trading</a>
+            <a href="#medical" class="footer-link">Medical</a>
+          </div>
+          <div>
+            <h4 class="footer-heading">Connect</h4>
+            <a href="tel:01315471934" class="footer-link">📞 01315471934</a>
+            <a href="https://wa.me/8801315471934" target="_blank" class="footer-link">💬 WhatsApp</a>
+            <a href="#contact" class="footer-link">Contact Page</a>
+          </div>
+        </div>
+        <div class="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p>Copyright © 2024 MD. Naimur Rahman Tamim. All rights reserved.</p>
+          <div class="flex items-center gap-3">
+            <span class="text-white">Bangladesh (English)</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ===================== DEVELOPER ANALYTICS (Admin Only) ===================== -->
+    <section data-admin-only id="dev-analytics" class="w-full bg-[#0a0a0c] border-t-2 border-[#30d5c8]/40 py-14 px-4">
+      <div class="max-w-[1024px] mx-auto">
+        <div class="flex items-center gap-3 mb-10">
+          <span class="text-3xl">📊</span>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Visitor Analytics</h2>
+            <p class="text-[#86868b] text-sm mt-0.5">Real-time stats — only you can see this</p>
+          </div>
+          <span class="ml-auto px-3 py-1 rounded-full bg-[#30d5c8]/10 border border-[#30d5c8]/30 text-[#30d5c8] text-xs font-mono">👑 DEVELOPER ONLY</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="apple-card p-5 text-center">
+            <div id="totalVisitCount" class="text-4xl font-black text-white mb-1">...</div>
+            <div class="text-[#86868b] text-xs uppercase tracking-widest">Total Visits</div>
+          </div>
+          <div class="apple-card p-5 text-center">
+            <div id="todayVisitCount" class="text-4xl font-black text-[#30d5c8] mb-1">...</div>
+            <div class="text-[#86868b] text-xs uppercase tracking-widest">Today</div>
+          </div>
+          <div class="apple-card p-5 text-center">
+            <div id="uniqueVisitCount" class="text-4xl font-black text-blue-400 mb-1">...</div>
+            <div class="text-[#86868b] text-xs uppercase tracking-widest">Unique</div>
+          </div>
+          <div class="apple-card p-5 text-center">
+            <div id="lastVisitTime" class="text-base font-bold text-emerald-400 mb-1">—</div>
+            <div class="text-[#86868b] text-xs uppercase tracking-widest">Last Visit</div>
+          </div>
+        </div>
+        <div class="apple-card overflow-hidden mb-6">
+          <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+            <h3 class="text-white font-semibold text-sm">📋 Visitor Log</h3>
+            <button onclick="clearVisitorLog()" class="text-xs text-red-400 hover:text-red-300">🗑 Clear Log</button>
+          </div>
+          <div id="visitorLogList" class="divide-y divide-white/5 max-h-80 overflow-y-auto">
+            <div class="px-6 py-8 text-center text-[#86868b] text-sm">No visitor data yet.</div>
+          </div>
+        </div>
+        <div class="apple-card overflow-hidden">
+          <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+            <h3 class="text-white font-semibold text-sm">✍️ Guestbook Entries</h3>
+            <button onclick="clearGuestbook()" class="text-xs text-red-400 hover:text-red-300">🗑 Clear</button>
+          </div>
+          <div id="guestbookList" class="divide-y divide-white/5 max-h-64 overflow-y-auto">
+            <div class="px-6 py-8 text-center text-[#86868b] text-sm">No guestbook entries yet.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Floating developer badge -->
+  <div id="adminBadge" class="fixed bottom-5 right-5 z-50 bg-[#0d1117]/95 border border-[#30d5c8]/50 backdrop-blur-xl px-4 py-2.5 rounded-full items-center gap-3 shadow-2xl text-xs font-mono hidden">
+    <span class="w-2 h-2 rounded-full bg-[#30d5c8] animate-pulse"></span>
+    <span class="text-white font-semibold">👑 Developer Mode</span>
+    <button onclick="copyVisitorLink()" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all font-sans text-xs">Copy Visitor Link 📋</button>
+    <button onclick="copyDevLink()" class="px-3 py-1 rounded-full bg-[#30d5c8]/20 text-[#30d5c8] border border-[#30d5c8]/40 hover:bg-[#30d5c8]/30 transition-all font-sans text-xs">Copy Dev Link 🔑</button>
+    <button onclick="exitAdminMode()" class="text-[#86868b] hover:text-red-400 transition-colors font-sans text-xs ml-1">Exit</button>
+  </div>
+
+  <script>
+    // ============================================================
+    // PHOTOS DATA
+    // ============================================================
+    const photosData = [
+      { src: 'assets/photos/hero.jpg', title: 'MD. Naimur Rahman Tamim', sub: 'Businessman · MBBS Candidate · Future Cardiologist' },
+      { src: 'assets/photos/about-1.jpg', title: 'Business Life', sub: 'Entrepreneur at work' },
+      { src: 'assets/photos/about-2.jpg', title: 'Medical Studies', sub: 'MBBS Candidate' },
+      { src: 'assets/photos/about-3.jpg', title: 'Trading & Markets', sub: 'Financial markets' },
+    ];
+
+    let currentLightboxIndex = 0;
+
+    function openLightbox(idx) {
+      currentLightboxIndex = idx;
+      const p = photosData[idx];
+      const lbImg = document.getElementById('lbImg');
+      const savedSrc = localStorage.getItem('dr_slot_' + idx);
+      lbImg.src = savedSrc || p.src;
+      document.getElementById('lbTitle').textContent = p.title;
+      document.getElementById('lbSub').textContent = p.sub;
+      const lb = document.getElementById('photoLightbox');
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+    }
+    function closeLightbox() {
+      const lb = document.getElementById('photoLightbox');
+      lb.classList.add('hidden'); lb.classList.remove('flex');
+    }
+    function prevLightbox() { currentLightboxIndex = (currentLightboxIndex - 1 + photosData.length) % photosData.length; openLightbox(currentLightboxIndex); }
+    function nextLightbox() { currentLightboxIndex = (currentLightboxIndex + 1) % photosData.length; openLightbox(currentLightboxIndex); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); if (e.key === 'ArrowLeft') prevLightbox(); if (e.key === 'ArrowRight') nextLightbox(); });
+
+    // ============================================================
+    // PHOTO REPLACEMENT (Admin)
+    // ============================================================
+    let currentReplacingPhoto = null;
+    function triggerPhotoReplace(key, imgId, idx, event) {
+      if (event) event.stopPropagation();
+      currentReplacingPhoto = { key, imgId, idx };
+      document.getElementById('photoReplacerInput').click();
+    }
+    function executePhotoReplacement(event) {
+      const file = event.target.files[0];
+      if (!file || !currentReplacingPhoto) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const dataUrl = e.target.result;
+        const img = document.getElementById(currentReplacingPhoto.imgId);
+        if (img) { img.src = dataUrl; img.style.display = ''; }
+        localStorage.setItem('dr_slot_' + currentReplacingPhoto.idx, dataUrl);
+        photosData[currentReplacingPhoto.idx].src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+    function loadSavedPhotos() {
+      photosData.forEach((p, i) => {
+        const saved = localStorage.getItem('dr_slot_' + i);
+        if (saved) {
+          const imgIds = ['heroImg','aboutImg1','aboutImg2','aboutImg3'];
+          if (imgIds[i]) { const el = document.getElementById(imgIds[i]); if (el) { el.src = saved; el.style.display = ''; } }
+          photosData[i].src = saved;
+        }
+      });
+    }
+
+    // ============================================================
+    // TEXT EDITING (Admin)
+    // ============================================================
+    function editText(elId, event) {
+      if (event) event.stopPropagation();
+      const el = document.getElementById(elId);
+      if (!el) return;
+      const current = el.textContent.trim();
+      const newText = prompt('Edit text:', current);
+      if (newText && newText.trim()) {
+        el.textContent = newText.trim();
+        localStorage.setItem('dr_text_' + elId, newText.trim());
+      }
+    }
+    function loadSavedTexts() {
+      ['aboutBio','businessDesc','tradingDesc','medicalDesc','medicalTitle','quoteText','contactDesc'].forEach(id => {
+        const saved = localStorage.getItem('dr_text_' + id);
+        if (saved) { const el = document.getElementById(id); if (el) el.textContent = saved; }
+      });
+    }
+
+    // ============================================================
+    // COPY FUNCTIONS
+    // ============================================================
+    function copyPhone() {
+      const num = document.getElementById('phoneNumber').textContent;
+      navigator.clipboard.writeText(num).then(() => alert('Phone number copied!')).catch(() => prompt('Phone:', num));
+    }
+    function copyVisitorLink() {
+      const url = window.location.origin + window.location.pathname;
+      navigator.clipboard.writeText(url).then(() => alert('Visitor link copied!\n' + url)).catch(() => prompt('Visitor Link:', url));
+    }
+    function copyDevLink() {
+      const url = window.location.origin + window.location.pathname + '?admin=tamim';
+      navigator.clipboard.writeText(url).then(() => alert('Developer link copied!\n' + url)).catch(() => prompt('Dev Link:', url));
+    }
+
+    // ============================================================
+    // ADMIN MODE
+    // ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const adminParam = urlParams.get('admin');
+    let isAdmin = false;
+    if (adminParam === 'tamim' || adminParam === 'naimur' || adminParam === 'admin' || adminParam === 'true' || adminParam === 'doctor') {
+      isAdmin = true;
+      localStorage.setItem('dr_admin', 'true');
+    } else {
+      localStorage.removeItem('dr_admin');
+      isAdmin = false;
+    }
+    window.isAdmin = isAdmin;
+
+    function applyAdminModeUI() {
+      if (isAdmin) {
+        document.body.classList.add('is-owner-mode');
+      } else {
+        document.body.classList.remove('is-owner-mode');
+      }
+      document.querySelectorAll('[data-admin-only]').forEach(el => {
+        el.style.display = isAdmin ? '' : 'none';
+      });
+      const badge = document.getElementById('adminBadge');
+      if (badge) {
+        if (isAdmin) { badge.classList.remove('hidden'); badge.classList.add('flex'); }
+        else { badge.classList.add('hidden'); badge.classList.remove('flex'); }
+      }
+    }
+
+    function exitAdminMode() {
+      localStorage.removeItem('dr_admin');
+      isAdmin = false; window.isAdmin = false;
+      applyAdminModeUI();
+      window.history.replaceState({}, document.title, window.location.pathname);
+      alert('Exited Developer Mode.');
+    }
+
+    // ============================================================
+    // THREE.JS 3D BACKGROUND (Medical teal theme)
+    // ============================================================
+    const canvas = document.getElementById('webgl-canvas');
+    const isMobile = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || window.innerWidth < 768;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 6.5;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true, powerPreference: 'low-power' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
+    const tealLight = new THREE.DirectionalLight(0x30d5c8, 3.0);
+    tealLight.position.set(5, 7, 5);
+    scene.add(tealLight);
+    const blueLight = new THREE.DirectionalLight(0x2997ff, 1.5);
+    blueLight.position.set(-6, -4, -3);
+    scene.add(blueLight);
+
+    const mat = new THREE.MeshPhysicalMaterial({
+      color: 0x0a1628,
+      emissive: 0x0d7a74,
+      emissiveIntensity: 0.2,
+      roughness: 0.15,
+      metalness: 0.95,
+      clearcoat: isMobile ? 0.3 : 0.9,
+      clearcoatRoughness: 0.1
+    });
+    const geom = new THREE.TorusKnotGeometry(1.2, 0.3, isMobile ? 32 : 64, isMobile ? 8 : 16);
+    const mesh = new THREE.Mesh(geom, mat);
+    scene.add(mesh);
+
+    let targetRotX = 0, targetRotY = 0;
+    if (!isMobile) {
+      window.addEventListener('mousemove', e => {
+        targetRotY = ((e.clientX / window.innerWidth) * 2 - 1) * 0.3;
+        targetRotX = -((e.clientY / window.innerHeight) * 2 - 1) * 0.2;
+      }, { passive: true });
+    }
+
+    let lastScrollY = window.scrollY, ticking = false;
+    window.addEventListener('scroll', () => {
+      lastScrollY = window.scrollY;
+      if (!ticking) {
+        requestAnimationFrame(() => { mesh.position.y = -lastScrollY * 0.001; ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const rotSpeed = isMobile ? 0.0015 : 0.003;
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      mesh.rotation.y += rotSpeed;
+      mesh.rotation.y += (targetRotY - mesh.rotation.y) * 0.05;
+      mesh.rotation.x += (targetRotX - mesh.rotation.x) * 0.05;
+      renderer.render(scene, camera);
+    }
+    renderLoop();
+
+    // ============================================================
+    // VISITOR TRACKING
+    // ============================================================
+    function trackVisit() {
+      const now = new Date();
+      const todayKey = now.toISOString().slice(0,10);
+      const vid = localStorage.getItem('dr_vid') || (() => { const id = 'v_' + Math.random().toString(36).slice(2,10); localStorage.setItem('dr_vid', id); return id; })();
+      const total = parseInt(localStorage.getItem('dr_total') || '0') + 1;
+      localStorage.setItem('dr_total', total);
+      const todayData = JSON.parse(localStorage.getItem('dr_today') || '{"date":"","count":0}');
+      const todayCount = todayData.date === todayKey ? todayData.count + 1 : 1;
+      localStorage.setItem('dr_today', JSON.stringify({ date: todayKey, count: todayCount }));
+      const uniques = JSON.parse(localStorage.getItem('dr_uniques') || '[]');
+      if (!uniques.includes(vid)) { uniques.push(vid); localStorage.setItem('dr_uniques', JSON.stringify(uniques)); }
+      localStorage.setItem('dr_last', now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }));
+      const log = JSON.parse(localStorage.getItem('dr_log') || '[]');
+      log.unshift({
+        time: now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
+        device: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? '📱 Mobile' : '💻 Desktop',
+        browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Firefox') ? 'Firefox' : navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
+        lang: navigator.language || 'Unknown'
+      });
+      if (log.length > 50) log.pop();
+      localStorage.setItem('dr_log', JSON.stringify(log));
+      fetch('https://api.counterapi.dev/v1/tamim-portfolio/visits/up').then(r=>r.json()).then(d=>{ if(d&&d.count) localStorage.setItem('dr_real_total', d.count); }).catch(()=>{});
+    }
+    trackVisit();
+
+    function loadAnalytics() {
+      const realTotal = localStorage.getItem('dr_real_total');
+      const total = realTotal || localStorage.getItem('dr_total') || '0';
+      const todayData = JSON.parse(localStorage.getItem('dr_today') || '{"count":0}');
+      const uniques = JSON.parse(localStorage.getItem('dr_uniques') || '[]');
+      const last = localStorage.getItem('dr_last') || '—';
+      const log = JSON.parse(localStorage.getItem('dr_log') || '[]');
+      const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      setEl('totalVisitCount', total);
+      setEl('todayVisitCount', todayData.count || 0);
+      setEl('uniqueVisitCount', uniques.length);
+      setEl('lastVisitTime', last);
+      const logEl = document.getElementById('visitorLogList');
+      if (logEl) {
+        logEl.innerHTML = log.length === 0
+          ? '<div class="px-6 py-8 text-center text-[#86868b] text-sm">No visitor data yet.</div>'
+          : log.map(v => `<div class="px-6 py-3 flex items-center justify-between gap-4"><div class="flex items-center gap-3"><span class="text-lg">${v.device.split(' ')[0]}</span><div><div class="text-white text-xs font-medium">${v.device} · ${v.browser}</div><div class="text-[#86868b] text-xs">${v.lang}</div></div></div><div class="text-[#86868b] text-xs whitespace-nowrap">${v.time}</div></div>`).join('');
+      }
+      const gb = JSON.parse(localStorage.getItem('dr_guestbook') || '[]');
+      const gbEl = document.getElementById('guestbookList');
+      if (gbEl) {
+        gbEl.innerHTML = gb.length === 0
+          ? '<div class="px-6 py-8 text-center text-[#86868b] text-sm">No guestbook entries yet.</div>'
+          : gb.map(g => `<div class="px-6 py-4"><div class="flex items-start justify-between gap-3"><div><div class="text-white font-semibold text-sm">${g.name||'Anonymous'}</div><div class="text-[#30d5c8] text-xs mt-0.5">${g.email||'—'}</div>${g.msg?`<div class="text-[#86868b] text-xs mt-1 italic">"${g.msg}"</div>`:''}</div><div class="text-[#86868b] text-xs whitespace-nowrap">${g.time}</div></div></div>`).join('');
+      }
+    }
+
+    function submitGuestbook() {
+      const name = document.getElementById('gbName').value.trim();
+      const email = document.getElementById('gbEmail').value.trim();
+      const msg = document.getElementById('gbMessage').value.trim();
+      if (!name && !email) { alert('Please enter at least a name or email.'); return; }
+      const gb = JSON.parse(localStorage.getItem('dr_guestbook') || '[]');
+      gb.unshift({ name, email, msg, time: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) });
+      localStorage.setItem('dr_guestbook', JSON.stringify(gb));
+      document.getElementById('gbName').value = '';
+      document.getElementById('gbEmail').value = '';
+      document.getElementById('gbMessage').value = '';
+      const s = document.getElementById('gbSuccess');
+      if (s) { s.classList.remove('hidden'); setTimeout(() => s.classList.add('hidden'), 3000); }
+    }
+
+    function clearVisitorLog() {
+      if (confirm('Delete all visitor log entries?')) {
+        ['dr_log','dr_total','dr_today','dr_uniques','dr_last'].forEach(k => localStorage.removeItem(k));
+        loadAnalytics();
+      }
+    }
+    function clearGuestbook() {
+      if (confirm('Delete all guestbook entries?')) { localStorage.removeItem('dr_guestbook'); loadAnalytics(); }
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    loadSavedPhotos();
+    loadSavedTexts();
+    applyAdminModeUI();
+    if (isAdmin) loadAnalytics();
+
+  </script>
+</body>
+</html>
