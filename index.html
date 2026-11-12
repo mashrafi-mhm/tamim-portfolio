@@ -308,6 +308,7 @@
           <a href="#section-grid" class="apple-nav-link">Gallery</a>
           <a href="#section-college" class="apple-nav-link">Medical College</a>
           <a href="#social" class="apple-nav-link">Business &amp; Medical</a>
+          <a href="#section-business" class="apple-nav-link">Business</a>
           <a href="#section-reflections" class="apple-nav-link">My Specification</a>
         </nav>
 
@@ -328,6 +329,7 @@
         <a href="#section-grid" class="apple-nav-link whitespace-nowrap">Gallery</a>
         <a href="#section-college" class="apple-nav-link whitespace-nowrap">Medical College</a>
         <a href="#social" class="apple-nav-link whitespace-nowrap">Business &amp; Medical</a>
+        <a href="#section-business" class="apple-nav-link whitespace-nowrap">Business</a>
         <a href="#section-reflections" class="apple-nav-link whitespace-nowrap">My Specification</a>
       </div>
     </header>
@@ -877,6 +879,87 @@
 
       </div>
     </section>
+
+    <!-- ======================================================== -->
+    <!-- BUSINESS & TRADING SECTION                                -->
+    <!-- ======================================================== -->
+    <section id="section-business" class="py-12 md:py-20 bg-[#000000] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div>
+            <span class="text-xs font-mono text-appleGold uppercase tracking-widest">Career & Enterprise</span>
+            <h2 class="text-3xl sm:text-5xl font-bold text-white mt-1 tracking-tight">Business &amp; Trading.</h2>
+            <p class="text-appleSubtext text-sm mt-2">Entrepreneur by drive, trader by skill — building a future beyond medicine.</p>
+          </div>
+          <div data-admin-only class="flex items-center gap-3">
+            <button onclick="document.getElementById('bizPhotoInput').click()" class="apple-btn-round text-xs py-2 px-4 flex items-center gap-1.5 shadow-lg shadow-blue-500/20">
+              <span>📷</span>
+              <span>Add Business Photos</span>
+            </button>
+            <input type="file" id="bizPhotoInput" accept="image/*" multiple class="hidden" onchange="handleBizPhotoUpload(event)">
+          </div>
+        </div>
+
+        <!-- Business Identity Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+
+          <!-- Businessman Card -->
+          <div class="apple-billboard-card p-8 bg-gradient-to-br from-[#1c170c] via-[#141210] to-[#0d0d0a] border-2 border-amber-500/40 shadow-2xl shadow-amber-500/10">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/30 text-3xl">
+                💼
+              </div>
+              <div>
+                <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest">Enterprise</span>
+                <h3 class="text-2xl font-bold text-white mt-0.5">Businessman</h3>
+              </div>
+            </div>
+            <p class="text-appleSubtext text-sm leading-relaxed mb-5">
+              An active entrepreneur balancing medical education with real-world business ventures. Building foundations today for a stronger tomorrow.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[11px] px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400">💼 Entrepreneur</span>
+              <span class="text-[11px] px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400">🚀 Growth-Minded</span>
+              <span class="text-[11px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-appleSubtext">🇧🇩 Bangladesh</span>
+            </div>
+          </div>
+
+          <!-- Trader Card -->
+          <div class="apple-billboard-card p-8 bg-gradient-to-br from-[#0c1a12] via-[#101410] to-[#0a0d0a] border-2 border-emerald-500/40 shadow-2xl shadow-emerald-500/10">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 text-3xl">
+                📈
+              </div>
+              <div>
+                <span class="text-[11px] font-mono text-emerald-400 uppercase tracking-widest">Markets</span>
+                <h3 class="text-2xl font-bold text-white mt-0.5">Trader</h3>
+              </div>
+            </div>
+            <p class="text-appleSubtext text-sm leading-relaxed mb-5">
+              Active in trading — disciplined, analytical, and consistent. The skills of the market sharpen the mind for the precision of Cardiology.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[11px] px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">📈 Active Trader</span>
+              <span class="text-[11px] px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400">📊 Analytical</span>
+              <span class="text-[11px] px-3 py-1 rounded-full bg-white/5 border border-white/10 text-appleSubtext">⚡ Consistent</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Future Business Photos Grid -->
+        <div id="bizPhotoGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Business photos will be added here by admin -->
+          <div id="bizPhotoPlaceholder" class="apple-billboard-card p-10 flex flex-col items-center justify-center text-center border-2 border-dashed border-white/10 md:col-span-2">
+            <span class="text-4xl mb-3">📸</span>
+            <p class="text-appleSubtext text-sm">Business photos will appear here.</p>
+            <p data-admin-only class="text-appleBlue text-xs mt-2 font-mono">Use "Add Business Photos" above to upload.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
     <!-- ============================================================ -->
     <!-- SIGN THE GUESTBOOK (Right below My Specification)            -->
     <!-- ============================================================ -->
@@ -940,6 +1023,7 @@
             <a href="#section-location" class="footer-link">Location</a>
             <a href="#social" class="footer-link">Business &amp; Medical</a>
             <a href="#section-reflections" class="footer-link">My Specification</a>
+            <a href="#section-business" class="footer-link">Business &amp; Trading</a>
           </div>
 
           <div>
@@ -1621,9 +1705,75 @@
       if (savedLogo) {
         document.getElementById('collegeLogoImg').src = savedLogo;
       }
-      loadSavedCustomPhotos();
+
+      loadBizPhotos();
       loadReplacedSlotPhotos();
       loadSavedTitles();
+    }
+
+
+    // ============================================================
+    // BUSINESS PHOTO UPLOADS
+    // ============================================================
+    function handleBizPhotoUpload(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+      let savedBizPhotos = JSON.parse(localStorage.getItem('tamim_biz_photos') || '[]');
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const photoObj = {
+            src: e.target.result,
+            id: 'biz_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5)
+          };
+          savedBizPhotos.push(photoObj);
+          localStorage.setItem('tamim_biz_photos', JSON.stringify(savedBizPhotos));
+          renderBizPhotoCard(photoObj);
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = '';
+    }
+
+    function renderBizPhotoCard(photo) {
+      const grid = document.getElementById('bizPhotoGrid');
+      const placeholder = document.getElementById('bizPhotoPlaceholder');
+      if (placeholder) placeholder.style.display = 'none';
+
+      const card = document.createElement('div');
+      card.className = 'apple-billboard-card overflow-hidden h-[400px] group cursor-pointer relative';
+      card.id = 'bizCard_' + photo.id;
+      card.innerHTML = `
+        <img src="${photo.src}" alt="Business Photo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div data-admin-only class="absolute top-4 right-4 z-30">
+          <button onclick="deleteBizPhoto('${photo.id}', event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-red-600 border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg">🗑 Remove</button>
+        </div>
+        <div class="absolute bottom-4 left-4">
+          <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest">Business</span>
+        </div>
+      `;
+      grid.appendChild(card);
+      if (window.isAdmin) card.querySelector('[data-admin-only]').style.display = 'block';
+      else card.querySelector('[data-admin-only]').style.display = 'none';
+    }
+
+    function deleteBizPhoto(id, event) {
+      event.stopPropagation();
+      if (!confirm('Remove this business photo?')) return;
+      let savedBizPhotos = JSON.parse(localStorage.getItem('tamim_biz_photos') || '[]');
+      savedBizPhotos = savedBizPhotos.filter(p => p.id !== id);
+      localStorage.setItem('tamim_biz_photos', JSON.stringify(savedBizPhotos));
+      const card = document.getElementById('bizCard_' + id);
+      if (card) card.remove();
+      if (document.getElementById('bizPhotoGrid').children.length === 1) {
+        document.getElementById('bizPhotoPlaceholder').style.display = '';
+      }
+    }
+
+    function loadBizPhotos() {
+      const saved = JSON.parse(localStorage.getItem('tamim_biz_photos') || '[]');
+      saved.forEach(photo => renderBizPhotoCard(photo));
     }
 
     loadSavedData();
@@ -1811,6 +1961,9 @@
   </div>
 </body>
 </html>
+
+
+
 
 
 
