@@ -1,13 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MD. Naimur Rahman Tamim • Official</title>
+  <!-- Apple System Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     tailwind.config = {
@@ -15,983 +18,1168 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['-apple-system','BlinkMacSystemFont','"SF Pro Display"','"SF Pro Text"','"Inter"','sans-serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Inter"', 'sans-serif'],
           },
           colors: {
             appleBg: '#000000',
+            appleHeroBg: '#0b0b0c',
             appleGrayBg: '#161617',
             appleCardBg: '#101012',
             appleText: '#f5f5f7',
             appleSubtext: '#86868b',
             appleBlue: '#2997ff',
-            appleTeal: '#30d5c8',
-            appleTealDim: '#1a7a75',
-            appleNavy: '#0a1628',
+            appleBlueHover: '#0071e3',
+            appleGold: '#30d5c8'
           }
         }
       }
     }
   </script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-    html { background: #000; color: #f5f5f7; }
-    body { background: #000; overflow-x: hidden; }
-
-    #webgl-canvas {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 0; outline: none; pointer-events: none;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-
+    html {
+      background-color: #000000;
+      color: #f5f5f7;
+    }
+    body {
+      background-color: #000000;
+      overflow-x: hidden;
+    }
+    /* 3D WebGL Canvas */
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      outline: none;
+      pointer-events: none;
+    }
+    /* Authentic Apple Header */
     .apple-global-nav {
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.8);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       height: 48px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background-color 0.5s ease;
     }
     .apple-nav-link {
-      color: #cecece; font-size: 12px; font-weight: 400;
-      letter-spacing: -0.01em; transition: color 0.25s; white-space: nowrap;
+      color: #cecece;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      transition: color 0.25s ease;
+      white-space: nowrap;
     }
-    .apple-nav-link:hover { color: #fff; }
-
-    .apple-billboard { background: #000; position: relative; overflow: hidden; margin-bottom: 12px; }
-
-    .apple-card {
-      background: #0d1117;
-      border-radius: 20px; overflow: hidden; position: relative;
-      transform: translateZ(0); -webkit-transform: translateZ(0);
-      backface-visibility: hidden; will-change: transform;
-      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
-      border: 1px solid rgba(48,213,200,0.1);
+    .apple-nav-link:hover {
+      color: #ffffff;
     }
-    .apple-card:hover {
+    /* Apple Billboard Units */
+    .apple-billboard {
+      background-color: #000000;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    /* Hardware-accelerated cards & buttery-smooth 60+ FPS */
+    .apple-billboard-card {
+      background-color: #161617;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      backface-visibility: hidden;
+      will-change: transform;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    }
+    .apple-billboard-card:hover {
       transform: scale(1.008) translateZ(0);
-      box-shadow: 0 20px 60px rgba(48,213,200,0.12);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
     }
-
-    /* Admin only hidden by default */
-    [data-admin-only] { display: none !important; }
-    body.is-owner-mode [data-admin-only] { display: flex !important; }
-    body.is-owner-mode button[data-admin-only] { display: inline-flex !important; }
-
-    .teal-btn {
-      background: linear-gradient(135deg, #0d7a74, #30d5c8);
-      color: #fff; font-size: 14px; font-weight: 600;
-      padding: 10px 22px; border-radius: 980px;
-      transition: opacity 0.2s, transform 0.2s;
+    /* Strictly hide admin elements for regular visitors */
+    [data-admin-only] {
+      display: none !important;
     }
-    .teal-btn:hover { opacity: 0.88; transform: scale(1.02); }
-
-    .ghost-btn {
-      background: transparent; color: #30d5c8;
-      border: 1px solid #30d5c8; font-size: 14px; font-weight: 400;
-      padding: 9px 20px; border-radius: 980px;
-      transition: all 0.2s;
+    body.is-owner-mode [data-admin-only] {
+      display: flex !important;
     }
-    .ghost-btn:hover { background: #30d5c8; color: #000; }
-
+    body.is-owner-mode button[data-admin-only] {
+      display: inline-flex !important;
+    }
+    /* Apple Blue CTA Links */
+    .apple-link {
+      color: #2997ff;
+      font-size: 14px;
+      font-weight: 400;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+    .apple-link:hover {
+      text-decoration: underline;
+      gap: 6px;
+    }
+    .apple-btn-round {
+      background: #0071e3;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 400;
+      padding: 8px 18px;
+      border-radius: 980px;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .apple-btn-round:hover {
+      background: #0077ed;
+      transform: scale(1.02);
+    }
+    .apple-btn-round-ghost {
+      background: transparent;
+      color: #2997ff;
+      border: 1px solid #2997ff;
+      font-size: 14px;
+      font-weight: 400;
+      padding: 7px 17px;
+      border-radius: 980px;
+      transition: all 0.2s ease;
+    }
+    .apple-btn-round-ghost:hover {
+      background: #2997ff;
+      color: #ffffff;
+    }
+    /* Horizontal Filmstrip Carousel */
+    .apple-carousel-track {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 24px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .apple-carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+    .apple-carousel-item {
+      flex: 0 0 280px;
+      scroll-snap-align: center;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #161617;
+      cursor: pointer;
+      transition: transform 0.4s ease;
+    }
+    @media (max-width: 640px) {
+      .apple-carousel-item {
+        flex: 0 0 85vw;
+      }
+    }
+    .apple-carousel-item:hover {
+      transform: translateY(-4px);
+    }
+    /* Mobile touch improvements */
+    @media (max-width: 768px) {
+      .apple-billboard-card:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .headline-large {
+        font-size: clamp(32px, 9vw, 60px);
+      }
+      .headline-sub {
+        font-size: clamp(16px, 4vw, 22px);
+      }
+      /* Bigger tap targets on mobile */
+      .apple-btn-round, .apple-btn-round-ghost {
+        padding: 10px 22px;
+        font-size: 15px;
+        min-height: 44px;
+      }
+      /* Cards full width on mobile */
+      section .max-w-\[1024px\] {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      /* Hero image shorter on mobile */
+      .hero-img-mobile {
+        height: 420px !important;
+      }
+    }
+    /* No hover animation on touch devices */
+    @media (hover: none) {
+      .apple-billboard-card:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .apple-carousel-item:hover {
+        transform: none;
+      }
+    }
+    /* Typography & Hierarchy */
     .headline-large {
-      font-size: clamp(36px, 7vw, 76px);
-      font-weight: 700; letter-spacing: -0.025em; line-height: 1.05;
+      font-size: clamp(44px, 7vw, 76px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
     }
     .headline-sub {
-      font-size: clamp(16px, 3vw, 24px);
-      font-weight: 400; letter-spacing: -0.01em; color: #f5f5f7;
+      font-size: clamp(20px, 3.2vw, 28px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: #f5f5f7;
     }
-
-    /* Pill tags */
-    .role-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 14px; border-radius: 980px;
-      font-size: 12px; font-weight: 500; letter-spacing: 0.01em;
-      border: 1px solid rgba(48,213,200,0.3);
-      background: rgba(48,213,200,0.08);
-      color: #30d5c8;
+    .headline-tag {
+      font-size: 17px;
+      font-weight: 400;
+      color: #86868b;
     }
-
-    /* Stat cards */
-    .stat-card {
-      background: #0d1117; border-radius: 16px;
-      padding: 20px; border: 1px solid rgba(48,213,200,0.15);
-      text-align: center;
+    /* Apple Footer links */
+    .footer-heading {
+      font-size: 12px;
+      font-weight: 600;
+      color: #f5f5f7;
+      margin-bottom: 10px;
     }
-
-    /* Photo slot */
-    .photo-slot {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.6s ease;
+    .footer-link {
+      font-size: 12px;
+      color: #86868b;
+      display: block;
+      margin-bottom: 8px;
+      transition: color 0.2s ease;
     }
-    .photo-wrapper:hover .photo-slot { transform: scale(1.05); }
-
-    /* Timeline */
-    .timeline-dot {
-      width: 12px; height: 12px; border-radius: 50%;
-      background: #30d5c8; flex-shrink: 0; margin-top: 4px;
-      box-shadow: 0 0 12px rgba(48,213,200,0.6);
+    .footer-link:hover {
+      color: #f5f5f7;
+      text-decoration: underline;
     }
-
-    /* Mobile nav strip */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    .footer-heading { font-size: 12px; font-weight: 600; color: #f5f5f7; margin-bottom: 10px; }
-    .footer-link { font-size: 12px; color: #86868b; display: block; margin-bottom: 8px; transition: color 0.2s; }
-    .footer-link:hover { color: #f5f5f7; text-decoration: underline; }
-
-    @media (max-width: 768px) {
-      .apple-card:hover { transform: none; box-shadow: none; }
-      @media (hover: none) { .apple-card:hover { transform: none; } }
-    }
-
-    /* Guestbook */
-    .gb-input {
-      width: 100%; background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
-      padding: 12px 16px; color: #fff; font-size: 14px;
-      margin-bottom: 12px; outline: none;
-      transition: border-color 0.2s;
-    }
-    .gb-input:focus { border-color: #30d5c8; }
-    .gb-input::placeholder { color: #86868b; }
   </style>
 </head>
 <body>
 
-  <!-- 3D WebGL Background -->
+  <!-- Three.js Minimal Apple 3D Atmosphere Layer -->
   <canvas id="webgl-canvas"></canvas>
 
-  <!-- Lightbox -->
+  <!-- Interactive Lightbox Modal -->
   <div id="photoLightbox" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl hidden flex items-center justify-center p-4">
-    <button onclick="closeLightbox()" class="absolute top-6 right-6 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all z-20">✕</button>
-    <button onclick="prevLightbox()" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-2xl hover:bg-white/20 z-20">‹</button>
-    <button onclick="nextLightbox()" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-2xl hover:bg-white/20 z-20">›</button>
+    <button onclick="closeLightbox()" class="absolute top-6 right-6 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all z-20">
+      ✕
+    </button>
+    <button onclick="prevLightboxImage()" class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all z-20">
+      ‹
+    </button>
+    <button onclick="nextLightboxImage()" class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center text-xl hover:bg-white/20 transition-all z-20">
+      ›
+    </button>
     <div class="max-w-4xl w-full text-center">
-      <img id="lbImg" src="" alt="" class="max-h-[80vh] mx-auto rounded-3xl object-contain shadow-2xl border border-white/10">
-      <h3 id="lbTitle" class="text-white text-lg font-semibold mt-4"></h3>
-      <p id="lbSub" class="text-appleSubtext text-xs mt-1"></p>
+      <img id="lightboxImg" src="" alt="Enlarged" class="max-h-[78vh] mx-auto rounded-3xl object-contain shadow-2xl border border-white/10">
+      <div class="mt-4">
+        <span id="lightboxCategory" class="text-xs uppercase tracking-widest text-appleGold font-mono"></span>
+        <h3 id="lightboxTitle" class="text-white text-lg font-semibold mt-1"></h3>
+        <p id="lightboxSubtitle" class="text-appleSubtext text-xs mt-0.5"></p>
+      </div>
     </div>
   </div>
 
-  <!-- Hidden photo input (admin) -->
-  <input type="file" id="photoReplacerInput" accept="image/*" class="hidden" onchange="executePhotoReplacement(event)">
-
-  <!-- Main content layer -->
+  <!-- Content Layer -->
   <div class="relative z-10 flex flex-col min-h-screen">
-
-    <!-- HEADER -->
+    
+    <!-- 1. AUTHENTIC APPLE GLOBAL NAVIGATION BAR -->
     <header class="w-full apple-global-nav sticky top-0 z-40 flex flex-col justify-center">
       <div class="max-w-[1024px] mx-auto w-full px-4 flex items-center justify-between h-12">
-        <a href="#hero" class="text-xs font-semibold text-white tracking-tight hover:opacity-75 transition-opacity">
-          MD. Naimur Rahman Tamim
+        
+        <!-- Brand -->
+        <a href="#hero" class="flex items-center text-white hover:opacity-75 transition-opacity" title="Mashrafi Hossain">
+          <span class="text-xs font-semibold text-white tracking-tight">MD. Naimur Rahman Tamim</span>
         </a>
-        <!-- Desktop nav -->
-        <nav class="hidden md:flex items-center space-x-7">
+
+        <!-- Desktop Apple Main Nav Links -->
+        <nav class="hidden md:flex items-center space-x-8">
           <a href="#hero" class="apple-nav-link">Overview</a>
-          <a href="#about" class="apple-nav-link">About</a>
-          <a href="#journey" class="apple-nav-link">Journey</a>
-          <a href="#business" class="apple-nav-link">Business</a>
-          <a href="#medical" class="apple-nav-link">Medical</a>
-          <a href="#contact" class="apple-nav-link">Contact</a>
+          <a href="#section-billboard-2" class="apple-nav-link">Journey</a>
+          <a href="#section-grid" class="apple-nav-link">Gallery</a>
+          <a href="#section-college" class="apple-nav-link">Medical College</a>
+          <a href="#social" class="apple-nav-link">Business &amp; Medical</a>
+          <a href="#section-reflections" class="apple-nav-link">My Specification</a>
         </nav>
-        <!-- Contact link -->
-        <a href="#contact" class="text-xs text-[#30d5c8] hover:text-white transition-colors flex items-center gap-1.5 font-medium">
-          <span>Contact</span>
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        </a>
+
+        <!-- Right Quick Links -->
+        <div class="flex items-center">
+          <a href="#social" class="text-xs text-appleBlue hover:text-white transition-colors flex items-center gap-1.5 font-medium">
+            <span>Contact</span>
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+        </div>
+
       </div>
-      <!-- Mobile nav strip -->
+
+      <!-- Mobile Scrolling Navigation Strip (Accessible on every phone) -->
       <div class="flex md:hidden overflow-x-auto no-scrollbar px-4 py-2 border-t border-white/5 space-x-5 bg-black/90 text-xs">
         <a href="#hero" class="apple-nav-link whitespace-nowrap">Overview</a>
-        <a href="#about" class="apple-nav-link whitespace-nowrap">About</a>
-        <a href="#journey" class="apple-nav-link whitespace-nowrap">Journey</a>
-        <a href="#business" class="apple-nav-link whitespace-nowrap">Business</a>
-        <a href="#medical" class="apple-nav-link whitespace-nowrap">Medical</a>
-        <a href="#contact" class="apple-nav-link whitespace-nowrap">Contact</a>
+        <a href="#section-billboard-2" class="apple-nav-link whitespace-nowrap">Journey</a>
+        <a href="#section-grid" class="apple-nav-link whitespace-nowrap">Gallery</a>
+        <a href="#section-college" class="apple-nav-link whitespace-nowrap">Medical College</a>
+        <a href="#social" class="apple-nav-link whitespace-nowrap">Business &amp; Medical</a>
+        <a href="#section-reflections" class="apple-nav-link whitespace-nowrap">My Specification</a>
       </div>
     </header>
 
-    <!-- Sub-ribbon -->
-    <div class="w-full bg-[#0a1628] py-2.5 text-center text-xs text-[#30d5c8] border-b border-[#30d5c8]/10">
-      Welcome to the official page of MD. Naimur Rahman Tamim — Businessman · Trader · Future Cardiologist
+    <!-- Sub-Ribbon / Announcement Banner -->
+    <div class="w-full bg-[#161617] py-3 text-center text-xs text-appleSubtext border-b border-white/5">
+      <span>Welcome to the official page of MD. Naimur Rahman Tamim. <a href="#section-billboard-1" class="text-appleBlue hover:underline">Explore &gt;</a></span>
     </div>
 
-    <!-- ===================== HERO ===================== -->
-    <section id="hero" class="apple-billboard pt-16 pb-10 text-center flex flex-col items-center">
+    <!-- ======================================================== -->
+    <!-- 2. BILLBOARD 1: FLAGSHIP HERO (IPHONE PRO STYLE)          -->
+    <!-- ======================================================== -->
+    <section id="hero" class="apple-billboard pt-16 pb-12 text-center flex flex-col items-center">
       <div class="max-w-[1024px] mx-auto px-4 w-full">
-
-        <div class="flex flex-wrap justify-center gap-2 mb-6">
-          <span class="role-pill">💼 Businessman</span>
-          <span class="role-pill">📈 Trader</span>
-          <span class="role-pill">🩺 MBBS Candidate</span>
-          <span class="role-pill">❤️ Future Cardiologist</span>
-        </div>
-
-        <h1 class="headline-large text-white mb-3">
-          MD. Naimur Rahman<br>
-          <span class="text-[#30d5c8]">Tamim.</span>
+        
+        <h1 class="headline-large text-white mb-2">
+          Naimur Rahman Tamim.
         </h1>
 
-        <p class="headline-sub text-[#86868b] mb-8 font-normal max-w-2xl mx-auto">
-          Explore.
+        <p class="headline-sub text-[#a1a1a6] mb-6 font-normal">
+          Businessman · Trader · MBBS Candidate · Future Cardiologist.
         </p>
 
-        <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
-          <a href="#journey" class="teal-btn">Explore Journey</a>
-          <a href="#contact" class="ghost-btn">Contact</a>
+        <!-- Action Button -->
+        <div class="flex items-center justify-center mb-10">
+          <a href="#section-billboard-1" class="apple-btn-round">
+            Explore
+          </a>
         </div>
 
-        <!-- Hero Photo -->
-        <div class="relative max-w-2xl mx-auto rounded-3xl overflow-hidden shadow-2xl cursor-pointer photo-wrapper group" onclick="openLightbox(0)">
-          <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
-            <button onclick="triggerPhotoReplace('hero','heroImg',0,event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+        <!-- Flagship Hero Photo Display (Apple Product Stage) -->
+        <div class="relative max-w-3xl mx-auto rounded-3xl overflow-hidden shadow-2xl cursor-pointer group" onclick="openLightboxImage(0)">
+          <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+            <button onclick="promptRenameCard('titleHero', '', 0, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+            <button onclick="triggerPhotoReplacement('hero', 'cardImgHero', 0, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
           </div>
-          <div class="h-[380px] sm:h-[520px] w-full relative bg-gradient-to-br from-[#0a1628] to-[#000]">
-            <img id="heroImg" src="assets/photos/hero.jpg" alt="MD. Naimur Rahman Tamim"
-              class="photo-slot"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-            <!-- Placeholder if no photo -->
-            <div style="display:flex" class="absolute inset-0 flex-col items-center justify-center gap-4">
-              <div class="w-32 h-32 rounded-full bg-gradient-to-br from-[#30d5c8]/30 to-[#0d7a74]/30 border-2 border-[#30d5c8]/40 flex items-center justify-center">
-                <span class="text-5xl">🩺</span>
-              </div>
-              <p class="text-[#30d5c8] text-sm font-mono opacity-60">Add your photo in Developer Mode</p>
-            </div>
+          <div class="h-[380px] sm:h-[520px] lg:h-[620px] w-full relative">
+            <img id="cardImgHero" src="assets/photos/hero.jpg" alt="Mashrafi Hossain" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out">
             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent"></div>
-            <div class="absolute bottom-8 left-8 right-8 text-left">
-              <h3 id="heroTitle" class="text-2xl sm:text-3xl font-bold text-white">MD. Naimur Rahman Tamim</h3>
-              <p class="text-[#30d5c8] text-sm mt-1 font-mono">Businessman · MBBS Candidate · Future Cardiologist</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ===================== ABOUT ===================== -->
-    <section id="about" class="py-16 md:py-24 bg-[#000] border-t border-white/10">
-      <div class="max-w-[1024px] mx-auto px-4">
-        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Who He Is</span>
-        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-12 tracking-tight">About Tamim.</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Left: Bio card -->
-          <div class="apple-card p-7">
-            <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
-              <button onclick="editText('aboutBio',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
-            </div>
-            <div class="w-16 h-16 rounded-2xl bg-[#30d5c8]/10 border border-[#30d5c8]/30 flex items-center justify-center mb-5 text-3xl">👨‍⚕️</div>
-            <h3 class="text-white font-bold text-xl mb-3">The Visionary</h3>
-            <p id="aboutBio" class="text-[#86868b] text-sm leading-relaxed">
-              MD. Naimur Rahman Tamim is a driven entrepreneur, active trader, and dedicated MBBS candidate. With a rare combination of business acumen and medical passion, he is on a mission to become a world-class Cardiologist — healing hearts while building empires.
-            </p>
-          </div>
-
-          <!-- Right: Stats grid -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="stat-card">
-              <div class="text-3xl font-black text-[#30d5c8] mb-1">MBBS</div>
-              <div class="text-[#86868b] text-xs uppercase tracking-widest">Candidate</div>
-            </div>
-            <div class="stat-card">
-              <div class="text-3xl font-black text-[#30d5c8] mb-1">❤️</div>
-              <div class="text-[#86868b] text-xs uppercase tracking-widest">Cardiology</div>
-            </div>
-            <div class="stat-card">
-              <div class="text-3xl font-black text-[#30d5c8] mb-1">📈</div>
-              <div class="text-[#86868b] text-xs uppercase tracking-widest">Trader</div>
-            </div>
-            <div class="stat-card">
-              <div class="text-3xl font-black text-[#30d5c8] mb-1">💼</div>
-              <div class="text-[#86868b] text-xs uppercase tracking-widest">Businessman</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Photo row -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-          <div class="apple-card overflow-hidden photo-wrapper cursor-pointer h-56 group" onclick="openLightbox(1)">
-            <div data-admin-only class="absolute top-3 right-3 z-30 items-center gap-1">
-              <button onclick="triggerPhotoReplace('p1','aboutImg1',1,event)" class="px-2 py-1 rounded-full bg-black/80 text-white text-xs border border-white/20">📷</button>
-            </div>
-            <img id="aboutImg1" src="assets/photos/about-1.jpg" alt="Tamim"
-              class="photo-slot h-full w-full object-cover"
-              onerror="this.parentElement.style.background='linear-gradient(135deg,#0a1628,#0d1117)'; this.style.display='none'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-4 left-4">
-              <p class="text-white text-xs font-semibold" id="aboutImg1Title">Business Life</p>
-            </div>
-          </div>
-          <div class="apple-card overflow-hidden photo-wrapper cursor-pointer h-56 group" onclick="openLightbox(2)">
-            <div data-admin-only class="absolute top-3 right-3 z-30 items-center gap-1">
-              <button onclick="triggerPhotoReplace('p2','aboutImg2',2,event)" class="px-2 py-1 rounded-full bg-black/80 text-white text-xs border border-white/20">📷</button>
-            </div>
-            <img id="aboutImg2" src="assets/photos/about-2.jpg" alt="Tamim"
-              class="photo-slot h-full w-full object-cover"
-              onerror="this.parentElement.style.background='linear-gradient(135deg,#0a1628,#0d1117)'; this.style.display='none'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-4 left-4">
-              <p class="text-white text-xs font-semibold" id="aboutImg2Title">Medical Studies</p>
-            </div>
-          </div>
-          <div class="apple-card overflow-hidden photo-wrapper cursor-pointer h-56 group" onclick="openLightbox(3)">
-            <div data-admin-only class="absolute top-3 right-3 z-30 items-center gap-1">
-              <button onclick="triggerPhotoReplace('p3','aboutImg3',3,event)" class="px-2 py-1 rounded-full bg-black/80 text-white text-xs border border-white/20">📷</button>
-            </div>
-            <img id="aboutImg3" src="assets/photos/about-3.jpg" alt="Tamim"
-              class="photo-slot h-full w-full object-cover"
-              onerror="this.parentElement.style.background='linear-gradient(135deg,#0a1628,#0d1117)'; this.style.display='none'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div class="absolute bottom-4 left-4">
-              <p class="text-white text-xs font-semibold" id="aboutImg3Title">Trading & Markets</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== JOURNEY (TIMELINE) ===================== -->
-    <section id="journey" class="py-16 md:py-24 bg-[#050810] border-t border-white/10">
-      <div class="max-w-[1024px] mx-auto px-4">
-        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">The Road Ahead</span>
-        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-12 tracking-tight">His Journey.</h2>
-
-        <div class="apple-card p-8 relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#30d5c8]/3 blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-          <div class="space-y-8 relative z-10">
-
-            <div class="flex gap-5">
-              <div class="flex flex-col items-center">
-                <div class="timeline-dot"></div>
-                <div class="w-px flex-1 bg-gradient-to-b from-[#30d5c8]/40 to-transparent mt-2"></div>
-              </div>
-              <div class="pb-6">
-                <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest">Present</span>
-                <h3 class="text-white font-bold text-lg mt-1">MBBS Candidate</h3>
-                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">Currently pursuing MBBS with a burning passion for medicine. Every lecture, every lab session — one step closer to the operating room.</p>
-              </div>
-            </div>
-
-            <div class="flex gap-5">
-              <div class="flex flex-col items-center">
-                <div class="timeline-dot"></div>
-                <div class="w-px flex-1 bg-gradient-to-b from-[#30d5c8]/40 to-transparent mt-2"></div>
-              </div>
-              <div class="pb-6">
-                <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest">Ongoing</span>
-                <h3 class="text-white font-bold text-lg mt-1">Businessman & Trader</h3>
-                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">Actively running businesses and trading in financial markets. Building financial independence while funding his medical dream.</p>
-              </div>
-            </div>
-
-            <div class="flex gap-5">
-              <div class="flex flex-col items-center">
-                <div class="timeline-dot opacity-50"></div>
-                <div class="w-px flex-1 bg-gradient-to-b from-[#30d5c8]/20 to-transparent mt-2"></div>
-              </div>
-              <div class="pb-6">
-                <span class="text-xs font-mono text-[#86868b] uppercase tracking-widest">Goal</span>
-                <h3 class="text-white font-bold text-lg mt-1">Cardiologist</h3>
-                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">The ultimate dream — to specialize in Cardiology and save lives. Working relentlessly each day to make this a reality.</p>
-              </div>
-            </div>
-
-            <div class="flex gap-5">
-              <div class="flex flex-col items-center">
-                <div class="timeline-dot opacity-30"></div>
-              </div>
+            
+            <div class="absolute bottom-8 left-8 right-8 flex items-end justify-between text-left">
               <div>
-                <span class="text-xs font-mono text-[#86868b] uppercase tracking-widest">Vision</span>
-                <h3 class="text-white font-bold text-lg mt-1">Doctor & Entrepreneur</h3>
-                <p class="text-[#86868b] text-sm mt-1 leading-relaxed">To build a healthcare empire — combining the precision of a cardiologist with the vision of a successful entrepreneur.</p>
+                <h3 id="titleHero" class="text-2xl sm:text-3xl font-bold text-white">MD. Naimur Rahman Tamim</h3>
+              </div>
+              <span class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white text-base">🔍</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- 3. BILLBOARD 2: COLLECTION 01 - THE SIGNATURE SERIES       -->
+    <!-- ======================================================== -->
+    <section id="section-billboard-1" class="apple-billboard pt-14 pb-12 text-center">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+        
+        <span class="text-xs font-mono font-semibold uppercase tracking-widest text-appleGold mb-2 block">
+          Portraits
+        </span>
+
+        <div class="flex items-center justify-center gap-3 mb-2 flex-wrap">
+          <h2 id="secTitlePortraits" class="headline-large text-white">
+            Portraits & Signature Looks.
+          </h2>
+          <button data-admin-only onclick="promptRenameSimple('secTitlePortraits', 'Enter Section Title:', event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+        </div>
+
+        <p class="headline-sub text-appleSubtext mb-4">
+          Natural perspective with balanced studio lighting.
+        </p>
+
+        <div class="flex items-center justify-center gap-6 mb-12">
+          <a href="#section-grid" class="apple-link">View all photos &gt;</a>
+          <a href="#social" class="apple-link">Contact Tamim &gt;</a>
+        </div>
+
+        <!-- Two Column Apple Hero Side-by-Side -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+          
+          <!-- Card 1 -->
+          <div class="apple-billboard-card p-6 h-[480px] flex flex-col justify-between group cursor-pointer relative" onclick="openLightboxImage(1)">
+            <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+              <button onclick="promptRenameCard('titleCard01', 'subCard01', 1, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+              <button onclick="triggerPhotoReplacement('moment-01', 'cardImg01', 1, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+            </div>
+            <div>
+              <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest">Portrait 01</span>
+              <h3 id="titleCard01" class="text-2xl font-bold text-white mt-1">Studio Portrait</h3>
+              <p id="subCard01" class="text-appleSubtext text-xs mt-1">Balanced posture with natural studio lighting.</p>
+            </div>
+            <div class="h-80 rounded-2xl overflow-hidden mt-4">
+              <img id="cardImg01" src="assets/photos/about-1.jpg" alt="Studio Portrait" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="apple-billboard-card p-6 h-[480px] flex flex-col justify-between group cursor-pointer relative" onclick="openLightboxImage(2)">
+            <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+              <button onclick="promptRenameCard('titleCard02', 'subCard02', 2, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+              <button onclick="triggerPhotoReplacement('moment-02', 'cardImg02', 2, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+            </div>
+            <div>
+              <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest">Portrait 02</span>
+              <h3 id="titleCard02" class="text-2xl font-bold text-white mt-1">Outdoor Portrait</h3>
+              <p id="subCard02" class="text-appleSubtext text-xs mt-1">Natural perspective and authentic depth.</p>
+            </div>
+            <div class="h-80 rounded-2xl overflow-hidden mt-4">
+              <img id="cardImg02" src="assets/photos/about-2.jpg" alt="Outdoor Portrait" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- 4. BILLBOARD 3: CELEBRATION SHOWCASE                       -->
+    <!-- ======================================================== -->
+    <section id="section-billboard-2" class="apple-billboard pt-6 pb-12 text-center">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+        
+        <!-- Full Width Showcase Card -->
+        <div class="apple-billboard-card relative h-[500px] sm:h-[580px] group cursor-pointer" onclick="openLightboxImage(5)">
+          <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+            <button onclick="promptRenameCard('titleCard05', 'subCard05', 5, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+            <button onclick="triggerPhotoReplacement('moment-05', 'cardImg05', 5, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+          </div>
+          <img id="cardImg05" src="assets/photos/photo-05.jpg" alt="Wedding Celebration" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+          
+          <div class="absolute bottom-8 left-8 right-8 text-left flex items-end justify-between">
+            <div>
+              <span class="text-xs font-mono text-appleBlue uppercase tracking-widest">Wedding & Celebration</span>
+              <h3 id="titleCard05" class="text-2xl sm:text-3xl font-bold text-white mt-1">Medical Journey</h3>
+              <p id="subCard05" class="text-appleSubtext text-sm mt-1 max-w-md">The path of a future Cardiologist — driven by purpose, passion, and perseverance.</p>
+            </div>
+            <span class="apple-btn-round text-xs font-medium">View Frame &gt;</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- 5. APPLE 2X2 PROMO GRID (ICONIC APPLE.COM HOMEPAGE GRID)   -->
+    <!-- ======================================================== -->
+    <section id="section-grid" class="py-8 bg-[#000000]">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+        
+        <!-- Owner Only: Add Photos Control -->
+        <div data-admin-only class="flex items-center justify-end mb-6 gap-3">
+          <button onclick="document.getElementById('newPhotoUploadInput').click()" class="apple-btn-round text-xs py-2 px-4 flex items-center gap-1.5 shadow-lg shadow-blue-500/20">
+            <span>📷</span>
+            <span>Add New Photos</span>
+          </button>
+          <input type="file" id="newPhotoUploadInput" accept="image/*" multiple class="hidden" onchange="handleNewPhotoUpload(event)">
+          <input type="file" id="photoReplacerInput" accept="image/*" class="hidden" onchange="executePhotoReplacement(event)">
+        </div>
+
+        <div id="curatedGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Grid 1: moment-03 (Travel & Outing) -->
+          <div class="apple-billboard-card p-6 h-[460px] flex flex-col justify-between group cursor-pointer text-center relative" onclick="openLightboxImage(3)">
+            <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+              <button onclick="promptRenameCard('titleCard03', 'subCard03', 3, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+              <button onclick="triggerPhotoReplacement('moment-03', 'cardImg03', 3, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+            </div>
+            <div>
+              <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest block mb-1">Travel Photo</span>
+              <h3 id="titleCard03" class="text-2xl font-bold text-white">Tour & Outing</h3>
+              <p id="subCard03" class="text-appleSubtext text-xs mt-1">Travel diaries and scenic journey moments.</p>
+              <span class="apple-link mt-2 inline-block">View Photo &gt;</span>
+            </div>
+            <div class="h-72 rounded-2xl overflow-hidden mt-4">
+              <img id="cardImg03" src="assets/photos/about-3.jpg" alt="Tour & Outing" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            </div>
+          </div>
+
+          <!-- Grid 2: moment-04 (Wedding Celebration) -->
+          <div class="apple-billboard-card p-6 h-[460px] flex flex-col justify-between group cursor-pointer text-center relative" onclick="openLightboxImage(4)">
+            <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+              <button onclick="promptRenameCard('titleCard04', 'subCard04', 4, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+              <button onclick="triggerPhotoReplacement('moment-04', 'cardImg04', 4, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+            </div>
+            <div>
+              <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest block mb-1">Wedding & Celebration</span>
+              <h3 id="titleCard04" class="text-2xl font-bold text-white">Family Gathering</h3>
+              <p id="subCard04" class="text-appleSubtext text-xs mt-1">Festive family and celebratory harmony.</p>
+              <span class="apple-link mt-2 inline-block">View Photo &gt;</span>
+            </div>
+            <div class="h-72 rounded-2xl overflow-hidden mt-4">
+              <img id="cardImg04" src="assets/photos/photo-04.jpg" alt="Family Gathering" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            </div>
+          </div>
+
+          <!-- Grid 3: moment-08 (Wedding Stage) -->
+          <div class="apple-billboard-card p-6 h-[460px] flex flex-col justify-between group cursor-pointer text-center relative" onclick="openLightboxImage(8)">
+            <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+              <button onclick="promptRenameCard('titleCard08', 'subCard08', 8, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+              <button onclick="triggerPhotoReplacement('moment-08', 'cardImg08', 8, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+            </div>
+            <div>
+              <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest block mb-1">Wedding & Celebration</span>
+              <h3 id="titleCard08" class="text-2xl font-bold text-white">Wedding Stage</h3>
+              <p id="subCard08" class="text-appleSubtext text-xs mt-1">Ceremonial stage and festive atmosphere.</p>
+              <span class="apple-link mt-2 inline-block">View Photo &gt;</span>
+            </div>
+            <div class="h-72 rounded-2xl overflow-hidden mt-4">
+              <img id="cardImg08" src="assets/photos/photo-08.jpg" alt="Wedding Stage" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            </div>
+          </div>
+
+          <!-- Grid 4: moment-10 (Candid Smile) -->
+          <div class="apple-billboard-card p-6 h-[460px] flex flex-col justify-between group cursor-pointer text-center relative" onclick="openLightboxImage(10)">
+            <div data-admin-only class="absolute top-4 right-4 z-30 flex items-center gap-2">
+              <button onclick="promptRenameCard('titleCard10', 'subCard10', 10, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Change Name</button>
+              <button onclick="triggerPhotoReplacement('moment-10', 'cardImg10', 10, event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change Photo</button>
+            </div>
+            <div>
+              <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest block mb-1">Portraits</span>
+              <h3 id="titleCard10" class="text-2xl font-bold text-white">Candid Smile</h3>
+              <p id="subCard10" class="text-appleSubtext text-xs mt-1">Unfiltered, authentic expression.</p>
+              <span class="apple-link mt-2 inline-block">View Photo &gt;</span>
+            </div>
+            <div class="h-72 rounded-2xl overflow-hidden mt-4">
+              <img id="cardImg10" src="assets/photos/photo-10.jpg" alt="Candid Smile" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- 6. ACADEMICS & COLLEGE SECTION (APPLE BENTO)              -->
+    <!-- ======================================================== -->
+    <section id="section-college" class="py-12 md:py-20 bg-[#000000] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div>
+            <span class="text-xs font-mono text-appleGold uppercase tracking-widest">Alma Mater</span>
+            <h2 class="text-3xl sm:text-5xl font-bold text-white mt-1 tracking-tight">College & Education.</h2>
+            <p class="text-appleSubtext text-sm mt-2">Where ambition meets knowledge and aspirations take flight.</p>
+          </div>
+          <button data-admin-only onclick="openInfoModal('college')" class="apple-btn-round-ghost text-xs self-start md:self-auto flex items-center gap-1.5">
+            <span>✏️</span>
+            <span>Edit College Info</span>
+          </button>
+        </div>
+
+        <div class="apple-billboard-card p-8 sm:p-10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-6">
+            
+            <!-- College Logo / Emblem -->
+            <div class="relative group cursor-pointer" onclick="if(window.isAdmin)document.getElementById('collegeLogoInput').click()" title="North East Medical College">
+              <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-black/60 border-2 border-amber-500/40 p-2 flex items-center justify-center shadow-2xl shadow-amber-500/20 group-hover:scale-105 transition-transform">
+                <img id="collegeLogoImg" src="assets/photos/hero.jpg" alt="North East Medical College Emblem" class="w-full h-full object-contain drop-shadow">
+              </div>
+              <span data-admin-only class="absolute -bottom-2 -right-2 w-7 h-7 rounded-full bg-appleGold text-black font-bold text-xs flex items-center justify-center shadow">📷</span>
+              <input type="file" id="collegeLogoInput" accept="image/*" class="hidden" onchange="handleCollegeLogoUpload(event)">
+            </div>
+
+            <!-- College Info Details -->
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest">Premier Institution</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✓ Verified Campus</span>
+              </div>
+              <h3 id="collegeNameText" class="text-2xl sm:text-4xl font-bold text-white mt-1">North East Medical College</h3>
+              <p class="text-sm font-mono text-appleGold mt-0.5">North East Medical College, Sylhet</p>
+              <p id="collegeDeptText" class="text-appleLightGray text-sm mt-1.5">MBBS Candidate • 2nd Year</p>
+              
+              <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-appleWhite font-mono">Affiliated: Sylhet Medical University</span>
+                <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-appleSubtext">Sylhet, Bangladesh</span>
+                <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">MBBS Programme</span>
+                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-appleGold">Future Cardiologist</span>
               </div>
             </div>
 
           </div>
+
+          <div class="text-center md:text-right">
+            <span class="text-4xl">🏛️</span>
+            <div class="text-xs text-appleSubtext mt-2 font-mono">WFME Recognized • WHO Listed</div>
+          </div>
         </div>
+
       </div>
     </section>
 
-    <!-- ===================== BUSINESS ===================== -->
-    <section id="business" class="py-16 md:py-24 bg-[#000] border-t border-white/10">
-      <div class="max-w-[1024px] mx-auto px-4">
-        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Enterprise</span>
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-          <h2 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Business & Trading.</h2>
+    <!-- ======================================================== -->
+    <!-- 8. RESIDENCE & LOCATION (APPLE MAPS & GOOGLE MAPS)       -->
+    <!-- ======================================================== -->
+    <section id="section-location" class="py-12 bg-[#000000] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+
+        <div class="mb-8 text-center">
+          <span class="text-xs font-mono text-appleGold uppercase tracking-widest">Get In Touch</span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mt-1 tracking-tight">Contact Tamim.</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <!-- WhatsApp Card -->
+          <a href="https://wa.me/8801315471934?text=Hello%20Tamim!" target="_blank" class="apple-billboard-card p-6 flex flex-col justify-between group hover:border-emerald-500/40 bg-gradient-to-br from-[#0d1c14] to-[#0a0c0b]">
+            <div class="flex items-center justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-[#25D366] flex items-center justify-center shadow-lg group-hover:scale-105 transition-all">
+                <svg viewBox="0 0 24 24" class="w-8 h-8 fill-current text-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </div>
+              <span class="text-xs text-appleSubtext font-mono group-hover:text-white">WhatsApp &gt;</span>
+            </div>
+            <div>
+              <span class="text-[11px] font-mono text-emerald-400 uppercase tracking-widest">Instant Message</span>
+              <h4 class="text-white font-bold text-2xl mt-1">WhatsApp</h4>
+              <p class="text-appleSubtext text-xs mt-1.5">+880 1315 471934 — Tap to open a direct conversation.</p>
+            </div>
+            <span class="apple-link mt-6 text-emerald-400 font-medium">Open WhatsApp &gt;</span>
+          </a>
 
-          <!-- Business card -->
-          <div class="apple-card p-7 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-40 h-40 rounded-full bg-[#30d5c8]/5 blur-2xl"></div>
-            <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
-              <button onclick="editText('businessDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+          <!-- Call Now Card -->
+          <a href="tel:01315471934" class="apple-billboard-card p-6 flex flex-col justify-between group hover:border-blue-500/40 bg-gradient-to-br from-[#0f1524] to-[#0a0a0c]">
+            <div class="flex items-center justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-[#007AFF] flex items-center justify-center shadow-lg group-hover:scale-105 transition-all">
+                <svg viewBox="0 0 24 24" class="w-8 h-8 fill-current text-white"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              </div>
+              <span class="text-xs text-appleSubtext font-mono group-hover:text-white">Phone &gt;</span>
             </div>
-            <div class="text-4xl mb-4">💼</div>
-            <h3 class="text-white font-bold text-xl mb-2">Businessman</h3>
-            <p id="businessDesc" class="text-[#86868b] text-sm leading-relaxed mb-5">
-              A sharp entrepreneurial mind driving multiple business ventures. From sourcing opportunities to closing deals — Tamim brings vision and execution together.
-            </p>
-            <div class="flex flex-wrap gap-2">
-              <span class="role-pill text-xs">Strategy</span>
-              <span class="role-pill text-xs">Networking</span>
-              <span class="role-pill text-xs">Operations</span>
+            <div>
+              <span class="text-[11px] font-mono text-appleBlue uppercase tracking-widest">Direct Call</span>
+              <h4 class="text-white font-bold text-2xl mt-1">Call Now</h4>
+              <p class="text-appleSubtext text-xs mt-1.5">01315471934 — Tap to dial instantly from any device.</p>
             </div>
-          </div>
-
-          <!-- Trading card -->
-          <div class="apple-card p-7 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-40 h-40 rounded-full bg-blue-500/5 blur-2xl"></div>
-            <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
-              <button onclick="editText('tradingDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
-            </div>
-            <div class="text-4xl mb-4">📈</div>
-            <h3 class="text-white font-bold text-xl mb-2">Trader</h3>
-            <p id="tradingDesc" class="text-[#86868b] text-sm leading-relaxed mb-5">
-              Active in financial markets with a data-driven approach. Reading charts, managing risk, and capitalizing on opportunities — trading is both discipline and art for Tamim.
-            </p>
-            <div class="flex flex-wrap gap-2">
-              <span class="role-pill text-xs">Market Analysis</span>
-              <span class="role-pill text-xs">Risk Management</span>
-              <span class="role-pill text-xs">Forex / Stocks</span>
-            </div>
-          </div>
+            <span class="apple-link mt-6 text-appleBlue font-medium">Tap to Call &gt;</span>
+          </a>
 
         </div>
+
+        </div>
+
       </div>
     </section>
 
-    <!-- ===================== MEDICAL ===================== -->
-    <section id="medical" class="py-16 md:py-24 bg-[#050810] border-t border-white/10">
-      <div class="max-w-[1024px] mx-auto px-4">
-        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Medicine</span>
-        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-10 tracking-tight">Medical Pursuit.</h2>
-
-        <!-- Big medical card -->
-        <div class="apple-card p-8 sm:p-12 relative overflow-hidden mb-5">
-          <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#30d5c8]/5 blur-3xl"></div>
-          <div class="relative z-10 flex flex-col md:flex-row items-start gap-8">
-            <div class="flex-shrink-0">
-              <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-[#30d5c8]/20 to-[#0d7a74]/20 border border-[#30d5c8]/30 flex items-center justify-center text-5xl shadow-2xl">
-                ❤️
-              </div>
-            </div>
-            <div class="flex-1">
-              <div data-admin-only class="absolute top-0 right-0 items-center gap-2">
-                <button onclick="editText('medicalDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
-              </div>
-              <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest">MBBS → Cardiology</span>
-              <h3 id="medicalTitle" class="text-white font-bold text-2xl sm:text-3xl mt-2 mb-3">Future Cardiologist</h3>
-              <p id="medicalDesc" class="text-[#86868b] text-sm sm:text-base leading-relaxed mb-6">
-                Cardiology is not just a specialization — it is a calling. MD. Naimur Rahman Tamim is committed to mastering the science of the heart, dedicating years of hard work, sleepless nights, and relentless study to become a skilled Cardiologist who can save lives.
-              </p>
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div class="bg-black/40 rounded-xl p-3 border border-white/5">
-                  <div class="text-[#30d5c8] font-bold text-sm">MBBS</div>
-                  <div class="text-[#86868b] text-xs mt-0.5">In Progress</div>
-                </div>
-                <div class="bg-black/40 rounded-xl p-3 border border-white/5">
-                  <div class="text-[#30d5c8] font-bold text-sm">Cardiology</div>
-                  <div class="text-[#86868b] text-xs mt-0.5">Specialization Goal</div>
-                </div>
-                <div class="bg-black/40 rounded-xl p-3 border border-white/5">
-                  <div class="text-[#30d5c8] font-bold text-sm">Hard Work</div>
-                  <div class="text-[#86868b] text-xs mt-0.5">Every Single Day</div>
-                </div>
-              </div>
-            </div>
+    <!-- ======================================================== -->
+    <!-- 9. GAMER STATION & SOCIAL NETWORKS (FREE FIRE + SOCIAL)   -->
+    <!-- ======================================================== -->
+    <section id="social" class="py-12 md:py-20 bg-[#000000] border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div>
+            <span class="text-xs font-mono text-appleGold uppercase tracking-widest">Digital Presence</span>
+            <h2 class="text-3xl sm:text-5xl font-bold text-white mt-1 tracking-tight">Social &amp; Connect.</h2>
+            <p class="text-appleSubtext text-sm mt-2">Connect across official social platforms and get in touch directly.</p>
           </div>
+          <button data-admin-only onclick="openInfoModal('socials')" class="apple-btn-round-ghost text-xs self-start md:self-auto flex items-center gap-1.5">
+            <span>✏️</span>
+            <span>Edit Social Profiles</span>
+          </button>
         </div>
 
-        <!-- Quote card -->
-        <div class="apple-card p-8 sm:p-10 text-center relative overflow-hidden mb-5">
-          <span class="text-6xl text-[#30d5c8]/20 font-serif absolute top-4 left-6 select-none">"</span>
-          <div data-admin-only class="absolute top-4 right-4 z-30 items-center gap-2">
-            <button onclick="editText('quoteText',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
-          </div>
-          <p id="quoteText" class="text-xl sm:text-2xl text-white font-bold leading-relaxed mb-6 font-sans tracking-tight relative z-10">
-            "I am not just studying medicine — I am preparing to save lives. Business funds my journey, trading sharpens my mind, and Cardiology is my destiny."
-          </p>
-          <p class="text-[#30d5c8] text-sm font-mono">— MD. Naimur Rahman Tamim</p>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          
+          <!-- 1. WHATSAPP CARD (HIGH IMPACT HIGHLIGHT) -->
+          <div class="apple-billboard-card p-6 border-2 border-emerald-500/50 relative overflow-hidden group md:col-span-2 lg:col-span-2 bg-gradient-to-br from-[#0d1c14] via-[#101515] to-[#0d0d12] shadow-2xl shadow-emerald-500/10">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+              <div class="flex items-center gap-4">
+                <div class="relative">
+                  <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-emerald-500 shadow-lg shadow-emerald-500/30">
+                    <img src="assets/photos/hero.jpg" alt="Tamim" class="w-full h-full object-cover">
+                  </div>
+                  <span class="absolute -bottom-1 -right-1 text-base">🟢</span>
+                </div>
 
-        <!-- North East Medical College Card -->
-        <div class="apple-card p-8 sm:p-10 relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-72 h-72 rounded-full bg-[#30d5c8]/4 blur-3xl -translate-y-1/2 translate-x-1/4"></div>
-          <div class="relative z-10">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 mb-7">
-              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#30d5c8]/20 to-blue-600/20 border border-[#30d5c8]/30 flex items-center justify-center text-4xl flex-shrink-0">🏥</div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="text-white font-extrabold text-xl tracking-wide">MD. Naimur Rahman Tamim</h4>
+                    <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono font-bold">BD</span>
+                  </div>
+                  <p class="text-xs text-emerald-400 font-mono mt-0.5">MBBS Candidate · Future Cardiologist</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 self-start sm:self-auto">
+                <span class="text-xs px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-bold font-mono shadow">
+                  Active ●
+                </span>
+              </div>
+            </div>
+
+            <!-- Contact Number Box -->
+            <div class="my-4 p-4 rounded-2xl bg-black/60 border border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
               <div>
-                <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest">Medical Institution</span>
-                <h3 class="text-white font-bold text-xl sm:text-2xl mt-1">North East Medical College</h3>
-                <p class="text-[#86868b] text-sm mt-0.5">Sylhet, Bangladesh</p>
+                <span class="text-[10px] text-appleSubtext uppercase font-mono tracking-wider">WhatsApp Number</span>
+                <div id="ffNameText" class="text-white font-black text-lg sm:text-xl tracking-wider mt-0.5 flex items-center gap-2">
+                  <span>01315471934</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
+                <div class="sm:text-right">
+                  <span class="text-[10px] text-appleSubtext uppercase font-mono tracking-wider">Tap to Chat</span>
+                  <div id="ffUidText" class="text-emerald-400 font-mono font-black text-lg">+8801315471934</div>
+                </div>
+                <button onclick="copyToClipboard('ffUidText', 'Number Copied! ✓')" class="apple-btn-round text-xs py-2 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-black font-bold shadow-lg shadow-emerald-500/30 transition-transform hover:scale-105">
+                  Copy 📋
+                </button>
               </div>
             </div>
 
-            <!-- International Recognitions Grid -->
-            <p class="text-[#86868b] text-xs uppercase tracking-widest font-mono mb-4">International Recognitions & Accreditations</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              <div class="bg-black/50 rounded-xl p-4 border border-[#30d5c8]/20 flex items-start gap-3">
-                <span class="text-2xl flex-shrink-0">🌐</span>
-                <div>
-                  <div class="text-white font-semibold text-sm">WFME Accredited</div>
-                  <div class="text-[#86868b] text-xs mt-0.5 leading-relaxed">Accredited by BMEAC — recognized by World Federation for Medical Education (WFME)</div>
-                </div>
-              </div>
-              <div class="bg-black/50 rounded-xl p-4 border border-[#30d5c8]/20 flex items-start gap-3">
-                <span class="text-2xl flex-shrink-0">🇺🇸</span>
-                <div>
-                  <div class="text-white font-semibold text-sm">ECFMG / USMLE Eligible</div>
-                  <div class="text-[#86868b] text-xs mt-0.5 leading-relaxed">Graduates eligible for ECFMG Certification & USMLE — pathway to US medical residency</div>
-                </div>
-              </div>
-              <div class="bg-black/50 rounded-xl p-4 border border-[#30d5c8]/20 flex items-start gap-3">
-                <span class="text-2xl flex-shrink-0">📋</span>
-                <div>
-                  <div class="text-white font-semibold text-sm">WHO World Directory Listed</div>
-                  <div class="text-[#86868b] text-xs mt-0.5 leading-relaxed">Listed in the World Directory of Medical Schools (WDOMS) — globally recognized institution</div>
-                </div>
-              </div>
-              <div class="bg-black/50 rounded-xl p-4 border border-[#30d5c8]/20 flex items-start gap-3">
-                <span class="text-2xl flex-shrink-0">🇬🇧</span>
-                <div>
-                  <div class="text-white font-semibold text-sm">GMC & Royal College (UK)</div>
-                  <div class="text-[#86868b] text-xs mt-0.5 leading-relaxed">Associated with General Medical Council (GMC, UK) and Royal College of Surgeons of England</div>
-                </div>
-              </div>
-              <div class="bg-black/50 rounded-xl p-4 border border-[#30d5c8]/20 flex items-start gap-3">
-                <span class="text-2xl flex-shrink-0">🏛️</span>
-                <div>
-                  <div class="text-white font-semibold text-sm">BM&DC Approved</div>
-                  <div class="text-[#86868b] text-xs mt-0.5 leading-relaxed">Recognized by Bangladesh Medical & Dental Council and Ministry of Health & Family Welfare</div>
-                </div>
-              </div>
-              <div class="bg-black/50 rounded-xl p-4 border border-[#30d5c8]/20 flex items-start gap-3">
-                <span class="text-2xl flex-shrink-0">🎓</span>
-                <div>
-                  <div class="text-white font-semibold text-sm">Sylhet Medical University</div>
-                  <div class="text-[#86868b] text-xs mt-0.5 leading-relaxed">Affiliated with Sylhet Medical University. BCPS recognized for postgraduate programs</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="p-4 rounded-xl bg-[#30d5c8]/5 border border-[#30d5c8]/20 text-center">
-              <p class="text-[#30d5c8] text-xs font-mono">🌟 One of the pioneering private medical institutions in Bangladesh to achieve WFME-level global accreditation</p>
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-appleSubtext font-mono">
+              <span>North East Medical College, Sylhet</span>
+              <span class="text-emerald-400">● Online · Fast Response</span>
             </div>
           </div>
+
+          <!-- 2. INSTAGRAM CARD -->
+          <a id="instaLink" href="https://www.instagram.com/" target="_blank" class="apple-billboard-card p-6 border-2 border-pink-500/40 flex flex-col justify-between group bg-gradient-to-br from-[#1d1217] via-[#141217] to-[#101014] shadow-2xl shadow-pink-500/10">
+            <div class="flex items-center justify-between mb-4">
+              <div class="relative">
+                <div class="w-14 h-14 rounded-2xl p-[3px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 shadow-lg shadow-pink-500/30 group-hover:scale-105 transition-transform flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" class="w-9 h-9"><defs><radialGradient id="igGrad2" r="150%" cx="30%" cy="107%"><stop stop-color="#fdf497" offset="0"/><stop stop-color="#fdf497" offset=".05"/><stop stop-color="#fd5949" offset=".45"/><stop stop-color="#d6249f" offset=".6"/><stop stop-color="#285AEB" offset=".9"/></radialGradient></defs><path fill="url(#igGrad2)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </div>
+              </div>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 font-mono border border-pink-500/40">Instagram</span>
+            </div>
+
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 id="instaNameText" class="text-white font-bold text-lg">Naimur Rahman Tamim</h4>
+                <span class="text-blue-400 text-xs">✓</span>
+              </div>
+              <p id="instaHandleText" class="text-pink-400 text-sm font-mono mt-0.5 font-semibold">@tamim</p>
+              <p class="text-appleSubtext text-xs mt-1.5">Photos, stories &amp; lifestyle updates.</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-pink-400 font-semibold group-hover:translate-x-1 transition-transform">
+              <span>Follow on Instagram</span>
+              <span>&gt;</span>
+            </div>
+          </a>
+
+          <!-- 3. FACEBOOK CARD -->
+          <a id="fbLink" href="https://www.facebook.com/" target="_blank" class="apple-billboard-card p-6 border-2 border-blue-600/40 flex flex-col justify-between group bg-gradient-to-br from-[#0f1524] via-[#11131c] to-[#101014] shadow-2xl shadow-blue-600/10">
+            <div class="flex items-center justify-between mb-4">
+              <div class="relative">
+                <div class="w-14 h-14 rounded-2xl bg-[#1877F2] flex items-center justify-center shadow-lg shadow-blue-600/30 group-hover:scale-105 transition-transform">
+                  <svg viewBox="0 0 24 24" class="w-9 h-9 fill-current text-white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </div>
+                <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#1877F2] border-2 border-black flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" class="w-3 h-3 fill-current text-white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </span>
+              </div>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-mono border border-blue-500/40">Facebook</span>
+            </div>
+
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 id="fbNameText" class="text-white font-bold text-lg">Naimur Rahman Tamim</h4>
+                <span class="text-blue-400 text-xs">✓</span>
+              </div>
+              <p class="text-blue-400 text-xs font-mono mt-0.5 font-semibold">Official Profile</p>
+              <p class="text-appleSubtext text-xs mt-1.5">Connect and follow updates on Facebook.</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-blue-400 font-semibold group-hover:translate-x-1 transition-transform">
+              <span>Connect on Facebook</span>
+              <span>&gt;</span>
+            </div>
+          </a>
+
+          <!-- 4. WHATSAPP DIRECT LINK CARD -->
+          <a href="https://wa.me/8801315471934?text=Hello%20Tamim!" target="_blank" class="apple-billboard-card p-6 border-2 border-emerald-500/40 flex flex-col justify-between group bg-gradient-to-br from-[#0d1c14] via-[#101515] to-[#101014] shadow-2xl shadow-emerald-500/10">
+            <div class="flex items-center justify-between mb-4">
+              <div class="relative">
+                <div class="w-14 h-14 rounded-2xl bg-[#25D366] flex items-center justify-center shadow-lg shadow-emerald-600/30 group-hover:scale-105 transition-transform">
+                  <svg viewBox="0 0 24 24" class="w-9 h-9 fill-current text-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </div>
+                <span class="w-3.5 h-3.5 rounded-full bg-emerald-400 absolute -top-1 -right-1 border-2 border-black animate-pulse"></span>
+              </div>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono border border-emerald-500/40">WhatsApp</span>
+            </div>
+
+            <div>
+              <h4 class="text-white font-bold text-lg">WhatsApp Direct</h4>
+              <p class="text-emerald-400 text-xs font-mono mt-0.5 font-semibold">+880 1315 471934</p>
+              <p class="text-appleSubtext text-xs mt-1.5">Direct personal chat and messaging on WhatsApp.</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-emerald-400 font-semibold group-hover:translate-x-1 transition-transform">
+              <span>Chat with Tamim</span>
+              <span>&gt;</span>
+            </div>
+          </a>
+
         </div>
 
       </div>
     </section>
 
-    <!-- ===================== CONTACT ===================== -->
-    <section id="contact" class="py-16 md:py-24 bg-[#000] border-t border-white/10">
-      <div class="max-w-[1024px] mx-auto px-4">
-        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Get in Touch</span>
-        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-10 tracking-tight">Contact.</h2>
+    <!-- ======================================================== -->
+    <!-- 8. MY SPECIFICATION SECTION (APPLE KEYNOTE MANIFESTO)     -->
+    <!-- ======================================================== -->
+    <section id="section-reflections" class="py-14 md:py-24 bg-[#0a0a0c] border-t border-white/10 text-center relative overflow-hidden">
+      <div class="max-w-[860px] mx-auto px-6 w-full relative z-10">
+        
+        <span class="text-xs font-mono text-appleGold uppercase tracking-widest mb-3 inline-block">
+          Personal Specification
+        </span>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-8 tracking-tight">
+          My Specification.
+        </h2>
 
-          <!-- Phone -->
-          <div class="apple-card p-7">
-            <div class="text-3xl mb-4">📞</div>
-            <h3 class="text-white font-bold text-lg mb-2">Phone</h3>
-            <p class="text-[#86868b] text-sm mb-4">Call or WhatsApp directly</p>
-            <div class="flex items-center gap-3">
-              <span id="phoneNumber" class="text-[#30d5c8] text-xl font-bold font-mono">01315471934</span>
-              <button onclick="copyPhone()" class="ghost-btn text-xs py-1.5 px-3">Copy</button>
-            </div>
-            <div class="flex gap-2 mt-4">
-              <a href="tel:01315471934" class="teal-btn text-xs py-2 px-4">📞 Call</a>
-              <a href="https://wa.me/8801315471934" target="_blank" class="ghost-btn text-xs py-2 px-4">💬 WhatsApp</a>
-            </div>
-          </div>
-
-          <!-- Business inquiry -->
-          <div class="apple-card p-7">
-            <div class="text-3xl mb-4">💼</div>
-            <h3 class="text-white font-bold text-lg mb-2">Business Inquiry</h3>
-            <p id="contactDesc" class="text-[#86868b] text-sm leading-relaxed mb-5">
-              For business partnerships, trading collaboration, or medical consultations — reach out directly. Always open to meaningful opportunities.
+        <!-- Apple Keynote Quote Box -->
+        <div class="apple-billboard-card p-8 sm:p-14 text-left relative overflow-hidden border-amber-500/20 shadow-2xl">
+          <span class="text-5xl sm:text-7xl text-appleGold/25 font-serif absolute top-4 left-6 select-none">“</span>
+          
+          <div class="relative z-10 pt-4">
+            <p id="reflectionQuoteText" class="text-xl sm:text-2xl text-white font-bold leading-relaxed mb-6 font-sans tracking-tight">
+              MD. Naimur Rahman Tamim is a driven entrepreneur, active trader, and MBBS candidate at North East Medical College, Sylhet. Working relentlessly to become a Cardiologist — business funds the journey, trading sharpens the mind, and Cardiology is the destiny.
             </p>
-            <div data-admin-only class="items-center gap-2">
-              <button onclick="editText('contactDesc',event)" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit Text</button>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <span class="role-pill text-xs">Business Partnership</span>
-              <span class="role-pill text-xs">Trading</span>
-              <span class="role-pill text-xs">Medical</span>
-            </div>
-          </div>
 
-        </div>
-      </div>
-    </section>
+            <div class="pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h4 class="text-white font-bold text-lg">MD. Naimur Rahman Tamim</h4>
+                <p class="text-xs text-appleGold font-mono mt-0.5">MBBS Candidate • Future Cardiologist • North East Medical College, Sylhet</p>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-appleSubtext">💼 Businessman</span>
+                  <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400">❤️ Future Cardiologist</span>
+                </div>
+              </div>
 
-    <!-- ===================== PHOTO GALLERY ===================== -->
-    <section id="gallery" class="py-16 md:py-24 bg-[#000] border-t border-white/10">
-      <div class="max-w-[1024px] mx-auto px-4">
-        <span class="text-xs font-mono text-[#30d5c8] uppercase tracking-widest mb-3 inline-block">Gallery</span>
-        <h2 class="text-3xl sm:text-5xl font-bold text-white mb-10 tracking-tight">Moments.</h2>
-        <!-- Scrollable carousel -->
-        <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar" style="-webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory;">
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(0)">
-            <img src="assets/photos/photo-04.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(1)">
-            <img src="assets/photos/photo-05.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(2)">
-            <img src="assets/photos/photo-06.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(3)">
-            <img src="assets/photos/photo-07.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(4)">
-            <img src="assets/photos/photo-08.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(5)">
-            <img src="assets/photos/photo-09.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(6)">
-            <img src="assets/photos/photo-10.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(7)">
-            <img src="assets/photos/photo-11.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(8)">
-            <img src="assets/photos/photo-12.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(9)">
-            <img src="assets/photos/photo-13.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(10)">
-            <img src="assets/photos/photo-14.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(11)">
-            <img src="assets/photos/photo-15.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(12)">
-            <img src="assets/photos/photo-16.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(13)">
-            <img src="assets/photos/photo-17.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(14)">
-            <img src="assets/photos/photo-18.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(15)">
-            <img src="assets/photos/photo-19.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
-          </div>
-          <div class="flex-shrink-0 w-[280px] sm:w-[320px] rounded-2xl overflow-hidden cursor-pointer photo-wrapper group" style="scroll-snap-align:center;" onclick="openGalleryLightbox(16)">
-            <img src="assets/photos/photo-20.jpg" alt="Gallery" class="photo-slot h-72 w-full object-cover rounded-2xl" onerror="this.parentElement.style.display='none'">
+              <button data-admin-only onclick="openInfoModal('reflections')" class="apple-btn-round-ghost text-xs self-start sm:self-auto flex items-center gap-1.5">
+                <span>✏️</span>
+                <span>Edit Specification</span>
+              </button>
+            </div>
           </div>
         </div>
-        <p class="text-[#86868b] text-xs text-center mt-4">← Swipe to see more photos →</p>
+
       </div>
     </section>
-
-    <!-- ===================== SIGN GUESTBOOK ===================== -->
-    <section class="py-12 bg-[#050810] border-t border-white/10">
+    <!-- ============================================================ -->
+    <!-- SIGN THE GUESTBOOK (Right below My Specification)            -->
+    <!-- ============================================================ -->
+    <section id="guestbook-section" class="apple-billboard py-12 border-t border-white/10">
       <div class="max-w-lg mx-auto px-4 text-center">
-        <h3 class="text-white font-bold text-xl mb-1">✍️ Sign the Guestbook</h3>
-        <p class="text-[#86868b] text-xs mb-6">Leave your name & email — Tamim will see who visited</p>
-        <div class="apple-card p-6 text-left">
-          <input id="gbName" type="text" placeholder="Your Name" maxlength="50" class="gb-input" />
-          <input id="gbEmail" type="email" placeholder="Your Email (e.g. example@gmail.com)" maxlength="80" class="gb-input" />
-          <input id="gbMessage" type="text" placeholder="A short message (optional)" maxlength="100" class="gb-input" />
-          <button onclick="submitGuestbook()" class="w-full teal-btn py-3 font-semibold">Submit ✓</button>
-          <div id="gbSuccess" class="hidden mt-3 text-center text-emerald-400 text-sm font-semibold">✅ Thank you! Your entry has been saved.</div>
+        <h3 class="text-white font-bold text-xl mb-1">&#x270D;&#xFE0F; Sign the Guestbook</h3>
+        <p class="text-appleSubtext text-xs mb-6">Leave your name &amp; email &#8212; Tamim will see who visited</p>
+        <div class="bg-[#161617] rounded-2xl p-5 border border-white/10 text-left">
+          <input id="gbName" type="text" placeholder="Your Name" maxlength="50"
+            class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-appleSubtext mb-3 outline-none focus:border-appleBlue transition-colors" />
+          <input id="gbEmail" type="email" placeholder="Your Email (e.g. example@gmail.com)" maxlength="80"
+            class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-appleSubtext mb-3 outline-none focus:border-appleBlue transition-colors" />
+          <input id="gbMessage" type="text" placeholder="A short message (optional)" maxlength="100"
+            class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-appleSubtext mb-4 outline-none focus:border-appleBlue transition-colors" />
+          <button onclick="submitGuestbook()" class="w-full apple-btn-round text-sm py-3 font-semibold">
+            Submit &#x2713;
+          </button>
+          <div id="gbSuccess" class="hidden mt-3 text-center text-emerald-400 text-sm font-semibold">&#x2705; Thank you! Your entry has been saved.</div>
         </div>
       </div>
     </section>
+    <!-- Modal for Editing College, Socials & Reflections -->
+    <div id="quickEditModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl hidden flex items-center justify-center p-4">
+      <div class="apple-billboard-card max-w-lg w-full p-6 sm:p-8 border border-white/15">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+          <h3 id="modalTitle" class="text-lg font-bold text-white">Update Information</h3>
+          <button onclick="closeInfoModal()" class="text-appleSubtext hover:text-white text-lg">✕</button>
+        </div>
 
-    <!-- ===================== FOOTER ===================== -->
-    <footer class="w-full bg-[#0a0a0c] text-[#86868b] text-[11px] pt-8 pb-12 border-t border-white/10">
-      <div class="max-w-[1024px] mx-auto px-4">
+        <div id="modalFormContainer" class="space-y-4 text-left text-xs">
+          <!-- Injected dynamically -->
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3 pt-3 border-t border-white/10">
+          <button onclick="closeInfoModal()" class="apple-btn-round-ghost text-xs">Cancel</button>
+          <button onclick="saveModalInfo()" class="apple-btn-round text-xs font-semibold">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 8. AUTHENTIC APPLE GLOBAL FOOTER                          -->
+    <!-- ======================================================== -->
+    <footer class="w-full bg-[#161617] text-[#86868b] text-[11px] pt-8 pb-12 border-t border-white/10">
+      <div class="max-w-[1024px] mx-auto px-4 w-full">
+
+        <!-- Apple Directory Sitemap Grid -->
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 py-4 border-b border-white/10">
           <div>
-            <h4 class="footer-heading">Pages</h4>
-            <a href="#hero" class="footer-link">Overview</a>
-            <a href="#about" class="footer-link">About</a>
-            <a href="#journey" class="footer-link">Journey</a>
+            <h4 class="footer-heading">Collections</h4>
+            <a href="#hero" class="footer-link">Naimur Rahman Tamim</a>
+            <a href="#section-billboard-1" class="footer-link">Portraits</a>
+            <a href="#section-billboard-2" class="footer-link">Showcase</a>
+            <a href="#section-grid" class="footer-link">Gallery</a>
           </div>
+
           <div>
-            <h4 class="footer-heading">Work</h4>
-            <a href="#business" class="footer-link">Business</a>
-            <a href="#business" class="footer-link">Trading</a>
-            <a href="#medical" class="footer-link">Medical</a>
+            <h4 class="footer-heading">Profile & Story</h4>
+            <a href="#hero" class="footer-link">Overview</a>
+            <a href="#section-college" class="footer-link">Academics</a>
+            <a href="#section-location" class="footer-link">Location</a>
+            <a href="#social" class="footer-link">Business &amp; Medical</a>
+            <a href="#section-reflections" class="footer-link">My Specification</a>
           </div>
+
           <div>
             <h4 class="footer-heading">Connect</h4>
-            <a href="tel:01315471934" class="footer-link">📞 01315471934</a>
-            <a href="https://wa.me/8801315471934" target="_blank" class="footer-link">💬 WhatsApp</a>
-            <a href="#contact" class="footer-link">Contact Page</a>
+            <a href="https://wa.me/8801315471934" target="_blank" class="footer-link">WhatsApp (+880 1315471934)</a>
+            <a id="footerFbLink" href="https://www.facebook.com/" target="_blank" class="footer-link">Facebook</a>
+            <a id="footerInstaLink" href="https://www.instagram.com/" target="_blank" class="footer-link">Instagram</a>
+            
           </div>
         </div>
-        <div class="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>Copyright © 2024 MD. Naimur Rahman Tamim. All rights reserved.</p>
-          <div class="flex items-center gap-3">
+
+        <!-- Apple Bottom Copyright & Legal Links -->
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[#86868b]">
+          <div>
+            Copyright © 2026 Naimur Rahman Tamim. All rights reserved.
+          </div>
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <a href="#" class="hover:underline">Privacy Policy</a>
+            <span>|</span>
+            <a href="#" class="hover:underline">Terms of Use</a>
+            <span>|</span>
+            <a href="#" class="hover:underline">Legal</a>
+            <span>|</span>
             <span class="text-white">Bangladesh (English)</span>
           </div>
         </div>
+
       </div>
     </footer>
 
-    <!-- ===================== DEVELOPER ANALYTICS (Admin Only) ===================== -->
-    <section data-admin-only id="dev-analytics" class="w-full bg-[#0a0a0c] border-t-2 border-[#30d5c8]/40 py-14 px-4">
+    <!-- ============================================================ -->
+    <!-- DEVELOPER ANALYTICS DASHBOARD (Only visible in Developer Mode) -->
+    <!-- ============================================================ -->
+    <section data-admin-only id="dev-analytics" class="w-full bg-[#0a0a0c] border-t-2 border-amber-500/40 py-14 px-4">
       <div class="max-w-[1024px] mx-auto">
+
+        <!-- Header -->
         <div class="flex items-center gap-3 mb-10">
           <span class="text-3xl">📊</span>
           <div>
             <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Visitor Analytics</h2>
-            <p class="text-[#86868b] text-sm mt-0.5">Real-time stats — only you can see this</p>
+            <p class="text-appleSubtext text-sm mt-0.5">Real-time stats — only you can see this section</p>
           </div>
-          <span class="ml-auto px-3 py-1 rounded-full bg-[#30d5c8]/10 border border-[#30d5c8]/30 text-[#30d5c8] text-xs font-mono">👑 DEVELOPER ONLY</span>
+          <span class="ml-auto px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-mono">👑 DEVELOPER ONLY</span>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div class="apple-card p-5 text-center">
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <!-- Total Visits -->
+          <div class="bg-[#161617] rounded-2xl p-5 border border-white/10 text-center">
             <div id="totalVisitCount" class="text-4xl font-black text-white mb-1">...</div>
-            <div class="text-[#86868b] text-xs uppercase tracking-widest">Total Visits</div>
+            <div class="text-appleSubtext text-xs uppercase tracking-widest">Total Visits</div>
           </div>
-          <div class="apple-card p-5 text-center">
-            <div id="todayVisitCount" class="text-4xl font-black text-[#30d5c8] mb-1">...</div>
-            <div class="text-[#86868b] text-xs uppercase tracking-widest">Today</div>
+          <!-- Today -->
+          <div class="bg-[#161617] rounded-2xl p-5 border border-white/10 text-center">
+            <div id="todayVisitCount" class="text-4xl font-black text-appleGold mb-1">...</div>
+            <div class="text-appleSubtext text-xs uppercase tracking-widest">Today</div>
           </div>
-          <div class="apple-card p-5 text-center">
+          <!-- Unique -->
+          <div class="bg-[#161617] rounded-2xl p-5 border border-white/10 text-center">
             <div id="uniqueVisitCount" class="text-4xl font-black text-blue-400 mb-1">...</div>
-            <div class="text-[#86868b] text-xs uppercase tracking-widest">Unique</div>
+            <div class="text-appleSubtext text-xs uppercase tracking-widest">Unique</div>
           </div>
-          <div class="apple-card p-5 text-center">
-            <div id="lastVisitTime" class="text-base font-bold text-emerald-400 mb-1">—</div>
-            <div class="text-[#86868b] text-xs uppercase tracking-widest">Last Visit</div>
+          <!-- Last Visit -->
+          <div class="bg-[#161617] rounded-2xl p-5 border border-white/10 text-center">
+            <div id="lastVisitTime" class="text-lg font-bold text-emerald-400 mb-1">—</div>
+            <div class="text-appleSubtext text-xs uppercase tracking-widest">Last Visit</div>
           </div>
         </div>
-        <div class="apple-card overflow-hidden mb-6">
+
+        <!-- Visitor Log -->
+        <div class="bg-[#161617] rounded-2xl border border-white/10 overflow-hidden mb-8">
           <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
             <h3 class="text-white font-semibold text-sm">📋 Visitor Log</h3>
-            <button onclick="clearVisitorLog()" class="text-xs text-red-400 hover:text-red-300">🗑 Clear Log</button>
+            <button onclick="clearVisitorLog()" class="text-xs text-red-400 hover:text-red-300 transition-colors">🗑 Clear Log</button>
           </div>
           <div id="visitorLogList" class="divide-y divide-white/5 max-h-80 overflow-y-auto">
-            <div class="px-6 py-8 text-center text-[#86868b] text-sm">No visitor data yet.</div>
+            <div class="px-6 py-8 text-center text-appleSubtext text-sm">Loading visitor data...</div>
           </div>
         </div>
-        <div class="apple-card overflow-hidden">
+
+        <!-- Note about Gmail -->
+        <div class="bg-[#1a1500] border border-amber-500/30 rounded-2xl p-5 mb-8">
+          <div class="flex gap-3">
+            <span class="text-2xl flex-shrink-0">💡</span>
+            <div>
+              <p class="text-amber-300 font-semibold text-sm mb-1">How to see visitor Gmail?</p>
+              <p class="text-appleSubtext text-xs leading-relaxed">A visitor's Gmail cannot be automatically captured — this is an internet privacy rule. However, if visitors sign the Guestbook below with their name and email, you will be able to see it here. You can also add <a href="https://analytics.google.com" target="_blank" class="text-appleBlue hover:underline">Google Analytics</a> to track device, country, and browser data.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guestbook Entries (from visitors who signed) -->
+        <div class="bg-[#161617] rounded-2xl border border-white/10 overflow-hidden">
           <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-            <h3 class="text-white font-semibold text-sm">✍️ Guestbook Entries</h3>
-            <button onclick="clearGuestbook()" class="text-xs text-red-400 hover:text-red-300">🗑 Clear</button>
+            <h3 class="text-white font-semibold text-sm">✍️ Guestbook Entries (Visitors who left their info)</h3>
+            <button onclick="clearGuestbook()" class="text-xs text-red-400 hover:text-red-300 transition-colors">🗑 Clear</button>
           </div>
           <div id="guestbookList" class="divide-y divide-white/5 max-h-64 overflow-y-auto">
-            <div class="px-6 py-8 text-center text-[#86868b] text-sm">No guestbook entries yet.</div>
+            <div class="px-6 py-8 text-center text-appleSubtext text-sm">No guestbook entries yet. Visitors can sign the guestbook below.</div>
           </div>
         </div>
+
       </div>
     </section>
 
   </div>
 
-  <!-- Floating developer badge -->
-  <div id="adminBadge" class="fixed bottom-5 right-5 z-50 bg-[#0d1117]/95 border border-[#30d5c8]/50 backdrop-blur-xl px-4 py-2.5 rounded-full items-center gap-3 shadow-2xl text-xs font-mono hidden">
-    <span class="w-2 h-2 rounded-full bg-[#30d5c8] animate-pulse"></span>
-    <span class="text-white font-semibold">👑 Developer Mode</span>
-    <button onclick="copyVisitorLink()" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all font-sans text-xs">Copy Visitor Link 📋</button>
-    <button onclick="copyDevLink()" class="px-3 py-1 rounded-full bg-[#30d5c8]/20 text-[#30d5c8] border border-[#30d5c8]/40 hover:bg-[#30d5c8]/30 transition-all font-sans text-xs">Copy Dev Link 🔑</button>
-    <button onclick="exitAdminMode()" class="text-[#86868b] hover:text-red-400 transition-colors font-sans text-xs ml-1">Exit</button>
   </div>
 
+  <!-- JavaScript: Lightbox, Carousel & Three.js 3D Background Engine -->
   <script>
-    // ============================================================
-    // PHOTOS DATA
-    // ============================================================
+    // All Curated Photos with Natural, Simple Titles
     const photosData = [
-      { src: 'assets/photos/hero.jpg', title: 'MD. Naimur Rahman Tamim', sub: 'Businessman · MBBS Candidate · Future Cardiologist' },
-      { src: 'assets/photos/about-1.jpg', title: 'Business Life', sub: 'Entrepreneur at work' },
-      { src: 'assets/photos/about-2.jpg', title: 'Medical Studies', sub: 'MBBS Candidate' },
-      { src: 'assets/photos/about-3.jpg', title: 'Trading & Markets', sub: 'Financial markets' },
+      { src: 'assets/photos/hero.jpg', title: 'MD. Naimur Rahman Tamim', category: 'Signature Look', desc: '85mm f/1.4 prime portrait in embroidered silk' },
+      { src: 'assets/photos/about-1.jpg', title: 'Business Portrait', category: 'Portraits', desc: 'Balanced posture with natural studio lighting' },
+      { src: 'assets/photos/about-2.jpg', title: 'Medical Journey', category: 'Portraits', desc: 'Natural perspective with warm studio ambient lighting' },
+      { src: 'assets/photos/about-3.jpg', title: 'Entrepreneur Life', category: 'Travel Photos', desc: 'Scenic travel and outing memories' },
+      { src: 'assets/photos/photo-04.jpg', title: 'Trading & Markets', category: 'Wedding & Celebration', desc: 'Festive family celebration' },
+      { src: 'assets/photos/photo-05.jpg', title: 'Wedding Celebration', category: 'Wedding & Celebration', desc: 'Celebratory stage and Medical Journey' },
+      { src: 'assets/photos/photo-06.jpg', title: 'Wedding Stage Decor', category: 'Wedding & Celebration', desc: 'Festive hall and floral decor' },
+      { src: 'assets/photos/photo-07.jpg', title: 'Reception Hall', category: 'Wedding & Celebration', desc: 'Reception venue and stage setup' },
+      { src: 'assets/photos/photo-08.jpg', title: 'MBBS Studies', category: 'Wedding & Celebration', desc: 'Traditional ceremonial backdrop' },
+      { src: 'assets/photos/photo-09.jpg', title: 'Celebration Moments', category: 'Wedding & Celebration', desc: 'Family and friends celebration' },
+      { src: 'assets/photos/photo-10.jpg', title: 'Cardiology Dream', category: 'Portraits', desc: 'Natural candid moment' },
+      { src: 'assets/photos/photo-11.jpg', title: 'Portrait Look', category: 'Portraits', desc: 'Signature portrait' },
+      { src: 'assets/photos/photo-12.jpg', title: 'Casual Portrait', category: 'Portraits', desc: 'Relaxed posture and expression' },
+      { src: 'assets/photos/photo-13.jpg', title: 'Classic Angle', category: 'Portraits', desc: 'Profile angle with fine detail' },
+      { src: 'assets/photos/photo-14.jpg', title: 'Celebration Finale', category: 'Wedding & Celebration', desc: 'Celebratory finale frame' }
     ];
 
-    let currentLightboxIndex = 0;
+    let currentPhotoIdx = 0;
 
-    function openLightbox(idx) {
-      currentLightboxIndex = idx;
-      const p = photosData[idx];
-      const lbImg = document.getElementById('lbImg');
-      const savedSrc = localStorage.getItem('dr_slot_' + idx);
-      lbImg.src = savedSrc || p.src;
-      document.getElementById('lbTitle').textContent = p.title;
-      document.getElementById('lbSub').textContent = p.sub;
-      const lb = document.getElementById('photoLightbox');
-      lb.classList.remove('hidden');
-      lb.classList.add('flex');
+    function openLightboxImage(idx) {
+      currentPhotoIdx = idx;
+      updateLightbox();
+      document.getElementById('photoLightbox').classList.remove('hidden');
     }
+
+    function updateLightbox() {
+      const item = photosData[currentPhotoIdx];
+      document.getElementById('lightboxImg').src = item.src;
+      document.getElementById('lightboxTitle').innerText = item.title;
+      document.getElementById('lightboxCategory').innerText = item.category;
+      document.getElementById('lightboxSubtitle').innerText = item.desc;
+    }
+
     function closeLightbox() {
-      const lb = document.getElementById('photoLightbox');
-      lb.classList.add('hidden'); lb.classList.remove('flex');
-    }
-    function prevLightbox() { currentLightboxIndex = (currentLightboxIndex - 1 + photosData.length) % photosData.length; openLightbox(currentLightboxIndex); }
-    function nextLightbox() { currentLightboxIndex = (currentLightboxIndex + 1) % photosData.length; openLightbox(currentLightboxIndex); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); if (e.key === 'ArrowLeft') prevLightbox(); if (e.key === 'ArrowRight') nextLightbox(); });
-
-    // ============================================================
-    // PHOTO REPLACEMENT (Admin)
-    // ============================================================
-    let currentReplacingPhoto = null;
-    function triggerPhotoReplace(key, imgId, idx, event) {
-      if (event) event.stopPropagation();
-      currentReplacingPhoto = { key, imgId, idx };
-      document.getElementById('photoReplacerInput').click();
-    }
-    function executePhotoReplacement(event) {
-      const file = event.target.files[0];
-      if (!file || !currentReplacingPhoto) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        const dataUrl = e.target.result;
-        const img = document.getElementById(currentReplacingPhoto.imgId);
-        if (img) { img.src = dataUrl; img.style.display = ''; }
-        localStorage.setItem('dr_slot_' + currentReplacingPhoto.idx, dataUrl);
-        photosData[currentReplacingPhoto.idx].src = dataUrl;
-      };
-      reader.readAsDataURL(file);
-      event.target.value = '';
-    }
-    function loadSavedPhotos() {
-      photosData.forEach((p, i) => {
-        const saved = localStorage.getItem('dr_slot_' + i);
-        if (saved) {
-          const imgIds = ['heroImg','aboutImg1','aboutImg2','aboutImg3'];
-          if (imgIds[i]) { const el = document.getElementById(imgIds[i]); if (el) { el.src = saved; el.style.display = ''; } }
-          photosData[i].src = saved;
-        }
-      });
+      document.getElementById('photoLightbox').classList.add('hidden');
     }
 
-    // ============================================================
-    // TEXT EDITING (Admin)
-    // ============================================================
-    function editText(elId, event) {
-      if (event) event.stopPropagation();
-      const el = document.getElementById(elId);
-      if (!el) return;
-      const current = el.textContent.trim();
-      const newText = prompt('Edit text:', current);
-      if (newText && newText.trim()) {
-        el.textContent = newText.trim();
-        localStorage.setItem('dr_text_' + elId, newText.trim());
+    function nextLightboxImage() {
+      currentPhotoIdx = (currentPhotoIdx + 1) % photosData.length;
+      updateLightbox();
+    }
+
+    function prevLightboxImage() {
+      currentPhotoIdx = (currentPhotoIdx - 1 + photosData.length) % photosData.length;
+      updateLightbox();
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('photoLightbox');
+      if (!modal.classList.contains('hidden')) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') nextLightboxImage();
+        if (e.key === 'ArrowLeft') prevLightboxImage();
       }
-    }
-    function loadSavedTexts() {
-      ['aboutBio','businessDesc','tradingDesc','medicalDesc','medicalTitle','quoteText','contactDesc'].forEach(id => {
-        const saved = localStorage.getItem('dr_text_' + id);
-        if (saved) { const el = document.getElementById(id); if (el) el.textContent = saved; }
-      });
-    }
+    });
 
-    // ============================================================
-    // COPY FUNCTIONS
-    // ============================================================
-    function copyPhone() {
-      const num = document.getElementById('phoneNumber').textContent;
-      navigator.clipboard.writeText(num).then(() => alert('Phone number copied!')).catch(() => prompt('Phone:', num));
-    }
-    function copyVisitorLink() {
-      const url = window.location.origin + window.location.pathname;
-      navigator.clipboard.writeText(url).then(() => alert('Visitor link copied!\n' + url)).catch(() => prompt('Visitor Link:', url));
-    }
-    function copyDevLink() {
-      const url = window.location.origin + window.location.pathname + '?admin=tamim';
-      navigator.clipboard.writeText(url).then(() => alert('Developer link copied!\n' + url)).catch(() => prompt('Dev Link:', url));
-    }
 
-    // ============================================================
-    // ADMIN MODE
-    // ============================================================
-    const urlParams = new URLSearchParams(window.location.search);
-    const adminParam = urlParams.get('admin');
-    let isAdmin = false;
-    if (adminParam === 'tamim' || adminParam === 'naimur' || adminParam === 'admin' || adminParam === 'true' || adminParam === 'doctor') {
-      isAdmin = true;
-      localStorage.setItem('dr_admin', 'true');
-    } else {
-      localStorage.removeItem('dr_admin');
-      isAdmin = false;
-    }
-    window.isAdmin = isAdmin;
-
-    function applyAdminModeUI() {
-      if (isAdmin) {
-        document.body.classList.add('is-owner-mode');
-      } else {
-        document.body.classList.remove('is-owner-mode');
-      }
-      document.querySelectorAll('[data-admin-only]').forEach(el => {
-        el.style.display = isAdmin ? '' : 'none';
-      });
-      const badge = document.getElementById('adminBadge');
-      if (badge) {
-        if (isAdmin) { badge.classList.remove('hidden'); badge.classList.add('flex'); }
-        else { badge.classList.add('hidden'); badge.classList.remove('flex'); }
-      }
-    }
-
-    function exitAdminMode() {
-      localStorage.removeItem('dr_admin');
-      isAdmin = false; window.isAdmin = false;
-      applyAdminModeUI();
-      window.history.replaceState({}, document.title, window.location.pathname);
-      alert('Exited Developer Mode.');
-    }
-
-    // ============================================================
-    // THREE.JS 3D BACKGROUND (Medical teal theme)
-    // ============================================================
+    // --- Three.js Subtle Apple Titanium 3D Studio Setup ---
     const canvas = document.getElementById('webgl-canvas');
-    const isMobile = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+    // Mobile detection — reduce 3D load on phones
+    const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 768;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 6.5;
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true, powerPreference: 'low-power' });
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !isMobileDevice, alpha: true, powerPreference: 'low-power' });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+    // Mobile: pixel ratio 1 to avoid GPU overload; Desktop: max 2
+    renderer.setPixelRatio(isMobileDevice ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    // Apple Studio Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambientLight);
-    const tealLight = new THREE.DirectionalLight(0x30d5c8, 3.0);
-    tealLight.position.set(5, 7, 5);
-    scene.add(tealLight);
-    const blueLight = new THREE.DirectionalLight(0x2997ff, 1.5);
-    blueLight.position.set(-6, -4, -3);
-    scene.add(blueLight);
 
-    const mat = new THREE.MeshPhysicalMaterial({
-      color: 0x0a1628,
-      emissive: 0x0d7a74,
-      emissiveIntensity: 0.2,
-      roughness: 0.15,
+    const goldKeyLight = new THREE.DirectionalLight(0xf5d082, 2.5);
+    goldKeyLight.position.set(5, 7, 5);
+    scene.add(goldKeyLight);
+
+    const rimLight = new THREE.DirectionalLight(0xa5b4fc, 1.8);
+    rimLight.position.set(-6, -4, -3);
+    scene.add(rimLight);
+
+    // Apple Grade Sculpted Titanium Ribbon
+    // Mobile: simpler geometry for smooth 60fps
+    const sculptureMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x141416,
+      emissive: 0x2e220a,
+      emissiveIntensity: 0.15,
+      roughness: 0.2,
       metalness: 0.95,
-      clearcoat: isMobile ? 0.3 : 0.9,
+      clearcoat: isMobileDevice ? 0.3 : 0.9,
       clearcoatRoughness: 0.1
     });
-    const geom = new THREE.TorusKnotGeometry(1.2, 0.3, isMobile ? 32 : 64, isMobile ? 8 : 16);
-    const mesh = new THREE.Mesh(geom, mat);
-    scene.add(mesh);
 
-    let targetRotX = 0, targetRotY = 0;
-    if (!isMobile) {
-      window.addEventListener('mousemove', e => {
+    const tubeSegments = isMobileDevice ? 32 : 64;
+    const radialSegments = isMobileDevice ? 8 : 16;
+    const sculptureGeom = new THREE.TorusKnotGeometry(1.2, 0.3, tubeSegments, radialSegments);
+    const sculptureMesh = new THREE.Mesh(sculptureGeom, sculptureMaterial);
+    scene.add(sculptureMesh);
+
+    // Mouse Parallax — desktop only
+    let targetRotX = 0;
+    let targetRotY = 0;
+    if (!isMobileDevice) {
+      window.addEventListener('mousemove', (e) => {
         targetRotY = ((e.clientX / window.innerWidth) * 2 - 1) * 0.3;
         targetRotX = -((e.clientY / window.innerHeight) * 2 - 1) * 0.2;
       }, { passive: true });
     }
 
-    let lastScrollY = window.scrollY, ticking = false;
+    // Ultra-light 60 FPS Render Loop
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
     window.addEventListener('scroll', () => {
       lastScrollY = window.scrollY;
       if (!ticking) {
-        requestAnimationFrame(() => { mesh.position.y = -lastScrollY * 0.001; ticking = false; });
+        window.requestAnimationFrame(() => {
+          sculptureMesh.position.y = -lastScrollY * 0.001;
+          ticking = false;
+        });
         ticking = true;
       }
     }, { passive: true });
@@ -1002,104 +1190,631 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    const rotSpeed = isMobile ? 0.0015 : 0.003;
+    // Mobile: slower rotation to reduce GPU heat
+    const rotSpeed = isMobileDevice ? 0.0015 : 0.003;
+
     function renderLoop() {
       requestAnimationFrame(renderLoop);
-      mesh.rotation.y += rotSpeed;
-      mesh.rotation.y += (targetRotY - mesh.rotation.y) * 0.05;
-      mesh.rotation.x += (targetRotX - mesh.rotation.x) * 0.05;
+      sculptureMesh.rotation.y += rotSpeed;
+      sculptureMesh.rotation.y += (targetRotY - sculptureMesh.rotation.y) * 0.05;
+      sculptureMesh.rotation.x += (targetRotX - sculptureMesh.rotation.x) * 0.05;
       renderer.render(scene, camera);
     }
     renderLoop();
 
+    // --- Dynamic Photo Slot Replacement (Owner Mode) ---
+    let currentReplacingPhoto = null;
+
+    function triggerPhotoReplacement(key, imgId, idx, event) {
+      if (event) event.stopPropagation();
+      currentReplacingPhoto = { key, imgId, idx };
+      const input = document.getElementById('photoReplacerInput');
+      if (input) input.click();
+    }
+
+    function executePhotoReplacement(event) {
+      const file = event.target.files[0];
+      if (!file || !currentReplacingPhoto) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        try {
+          localStorage.setItem('tamim_slot_photo_' + currentReplacingPhoto.key, dataUrl);
+        } catch (err) {
+          console.warn('Storage limit reached, displaying in session:', err);
+        }
+        const img = document.getElementById(currentReplacingPhoto.imgId);
+        if (img) img.src = dataUrl;
+        if (photosData[currentReplacingPhoto.idx]) {
+          photosData[currentReplacingPhoto.idx].src = dataUrl;
+        }
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    function loadReplacedSlotPhotos() {
+      const slots = [
+        { key: 'hero', imgId: 'cardImgHero', idx: 0 },
+        { key: 'moment-01', imgId: 'cardImg01', idx: 1 },
+        { key: 'moment-02', imgId: 'cardImg02', idx: 2 },
+        { key: 'moment-03', imgId: 'cardImg03', idx: 3 },
+        { key: 'moment-04', imgId: 'cardImg04', idx: 4 },
+        { key: 'moment-05', imgId: 'cardImg05', idx: 5 },
+        { key: 'moment-08', imgId: 'cardImg08', idx: 8 },
+        { key: 'moment-10', imgId: 'cardImg10', idx: 10 }
+      ];
+      slots.forEach(slot => {
+        const saved = localStorage.getItem('tamim_slot_photo_' + slot.key);
+        if (saved) {
+          const img = document.getElementById(slot.imgId);
+          if (img) img.src = saved;
+          if (photosData[slot.idx]) photosData[slot.idx].src = saved;
+        }
+      });
+    }
+
+    // --- Dynamic Title / Name Renaming (Owner Mode) ---
+    function promptRenameCard(titleId, subId, photoIdx, event) {
+      if (event) event.stopPropagation();
+      const titleEl = document.getElementById(titleId);
+      const currentTitle = titleEl ? titleEl.innerText : '';
+      const newTitle = prompt('Enter new photo title/name:', currentTitle);
+      if (newTitle !== null && newTitle.trim() !== '') {
+        if (titleEl) titleEl.innerText = newTitle.trim();
+        localStorage.setItem('tamim_title_' + titleId, newTitle.trim());
+        if (photosData[photoIdx]) photosData[photoIdx].title = newTitle.trim();
+      }
+    }
+
+    function promptRenameSimple(elId, promptText, event) {
+      if (event) event.stopPropagation();
+      const el = document.getElementById(elId);
+      const currentText = el ? el.innerText : '';
+      const newText = prompt(promptText || 'Enter new text:', currentText);
+      if (newText !== null && newText.trim() !== '') {
+        if (el) el.innerText = newText.trim();
+        localStorage.setItem('tamim_text_' + elId, newText.trim());
+      }
+    }
+
+    function loadSavedTitles() {
+      const titleIds = ['titleHero', 'secTitlePortraits', 'titleCard01', 'titleCard02', 'titleCard05', 'titleCard03', 'titleCard04', 'titleCard08', 'titleCard10'];
+      titleIds.forEach(id => {
+        const saved = localStorage.getItem('tamim_title_' + id) || localStorage.getItem('tamim_text_' + id);
+        if (saved) {
+          const el = document.getElementById(id);
+          if (el) el.innerText = saved;
+        }
+      });
+    }
+
+    // --- Robust Copy to Clipboard (PC & Mobile fallback) ---
+    function copyToClipboard(id, msg) {
+      const el = document.getElementById(id);
+      const text = el ? (el.innerText || el.textContent).trim() : id;
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(msg || 'Copied: ' + text);
+        }).catch(() => {
+          fallbackCopyText(text, msg);
+        });
+      } else {
+        fallbackCopyText(text, msg);
+      }
+    }
+
+    function fallbackCopyText(text, msg) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast(msg || 'Copied: ' + text);
+      } catch (err) {
+        prompt('Copy manually:', text);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function showToast(text) {
+      let toast = document.getElementById('globalToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'globalToast';
+        toast.className = 'fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-emerald-500 text-black px-4 py-2 rounded-full font-mono text-xs font-bold shadow-2xl transition-all duration-300 pointer-events-none opacity-0';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = text;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translate(-50%, 10px)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, 0)';
+      }, 2500);
+    }
+
+    // --- College Logo Handler ---
+    function handleCollegeLogoUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          localStorage.setItem('tamim_college_logo', e.target.result);
+          document.getElementById('collegeLogoImg').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // --- Admin / Developer Mode vs. Public Visitor Separation ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    const adminParam = urlParams.get('admin');
+
+    // Admin mode ONLY activates from URL param — localStorage is never trusted alone
+    // This ensures visitor link NEVER shows developer controls
+    let isAdmin = false;
+    if (adminParam === 'tamim' || adminParam === 'true' || adminParam === 'doctor' || adminParam === 'naimur' || adminParam === 'admin' || adminParam === 'owner' || hash === '#admin') {
+      isAdmin = true;
+      localStorage.setItem('tamim_admin', 'true');
+    } else {
+      // Clear any stale admin session — visitor link always resets
+      localStorage.removeItem('tamim_admin');
+      isAdmin = false;
+    }
+    window.isAdmin = isAdmin;
+
+    function applyAdminModeUI() {
+      if (isAdmin) {
+        document.body.classList.add('is-owner-mode');
+      } else {
+        document.body.classList.remove('is-owner-mode');
+      }
+
+      const adminElements = document.querySelectorAll('[data-admin-only]');
+      adminElements.forEach(el => {
+        el.style.display = isAdmin ? '' : 'none';
+      });
+
+      const badge = document.getElementById('adminBadge');
+      if (badge) {
+        if (isAdmin) {
+          badge.classList.remove('hidden');
+          badge.classList.add('flex');
+        } else {
+          badge.classList.add('hidden');
+          badge.classList.remove('flex');
+        }
+      }
+    }
+
+    function promptAdminLogin() {
+      const pass = prompt('Enter Developer / Owner Passcode:');
+      if (pass === 'tamim' || pass === 'doctor' || pass === 'naimur' || pass === 'admin') {
+        // Use sessionStorage only — closes when tab is closed, never persists to visitor link
+        sessionStorage.setItem('mashrafi_admin_session', 'true');
+        isAdmin = true;
+        window.isAdmin = true;
+        applyAdminModeUI();
+        alert('Welcome back, Tamim! Developer / Owner Mode is active.');
+      } else if (pass !== null) {
+        alert('Incorrect passcode.');
+      }
+    }
+
+    function exitAdminMode() {
+      localStorage.removeItem('tamim_admin');
+      sessionStorage.removeItem('mashrafi_admin_session');
+      isAdmin = false;
+      window.isAdmin = false;
+      applyAdminModeUI();
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+      alert('Exited Developer Mode. Public Visitor Mode active (No editing allowed).');
+    }
+
+    function copyShareLink() {
+      const publicUrl = window.location.origin + window.location.pathname;
+      navigator.clipboard.writeText(publicUrl).then(() => {
+        alert('Public Visitor Link copied!\n' + publicUrl + '\n(Visitors can view smoothly but cannot edit anything)');
+      }).catch(() => {
+        prompt('Public Visitor Link:', publicUrl);
+      });
+    }
+
+    function copyDevLink() {
+      const devUrl = window.location.origin + window.location.pathname + '?admin=tamim';
+      navigator.clipboard.writeText(devUrl).then(() => {
+        alert('Developer Admin Link copied!\n' + devUrl + '\n(Only you have edit controls with this link)');
+      }).catch(() => {
+        prompt('Developer Admin Link:', devUrl);
+      });
+    }
+
+    // --- Dynamic Quick Edit Modal ---
+    let currentModalType = '';
+
+    function openInfoModal(type) {
+      if (!isAdmin) return;
+      currentModalType = type;
+      const title = document.getElementById('modalTitle');
+      const container = document.getElementById('modalFormContainer');
+
+      if (type === 'college') {
+        title.innerText = 'Update College Details';
+        container.innerHTML = `
+          <div>
+            <label class="text-appleSubtext block mb-1">College Name</label>
+            <input type="text" id="mCollegeName" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('collegeNameText').innerText}">
+          </div>
+          <div>
+            <label class="text-appleSubtext block mb-1">Class & Group</label>
+            <input type="text" id="mCollegeDept" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('collegeDeptText').innerText}">
+          </div>
+        `;
+      } else if (type === 'socials') {
+        title.innerText = 'Update Gaming & Social Profiles';
+        container.innerHTML = `
+          <div>
+            <label class="text-appleSubtext block mb-1">Cardiology In-Game Name (IGN)</label>
+            <input type="text" id="mFfName" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('ffNameText').innerText}">
+          </div>
+          <div>
+            <label class="text-appleSubtext block mb-1">Cardiology Player UID</label>
+            <input type="text" id="mFfUid" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('ffUidText').innerText}">
+          </div>
+          <div>
+            <label class="text-appleSubtext block mb-1">Instagram Handle (@username)</label>
+            <input type="text" id="mInsta" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('instaHandleText').innerText}">
+          </div>
+        `;
+      } else if (type === 'reflections') {
+        title.innerText = 'Update Personal Specification';
+        container.innerHTML = `
+          <div>
+            <label class="text-appleSubtext block mb-1">Main Specification / Bio</label>
+            <textarea id="mQuote" rows="5" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none font-sans">${document.getElementById('reflectionQuoteText').innerText.trim()}</textarea>
+          </div>
+        `;
+      }
+
+      document.getElementById('quickEditModal').classList.remove('hidden');
+    }
+
+    function closeInfoModal() {
+      document.getElementById('quickEditModal').classList.add('hidden');
+    }
+
+    function saveModalInfo() {
+      if (currentModalType === 'college') {
+        const name = document.getElementById('mCollegeName').value;
+        const dept = document.getElementById('mCollegeDept').value;
+        localStorage.setItem('custom_college_name', name);
+        localStorage.setItem('custom_college_dept', dept);
+        document.getElementById('collegeNameText').innerText = name;
+        document.getElementById('collegeDeptText').innerText = dept;
+      } else if (currentModalType === 'socials') {
+        const ffName = document.getElementById('mFfName').value;
+        const ffUid = document.getElementById('mFfUid').value;
+        const insta = document.getElementById('mInsta').value;
+
+        localStorage.setItem('custom_ff_name', ffName);
+        localStorage.setItem('custom_ff_uid', ffUid);
+        localStorage.setItem('custom_insta', insta);
+
+        document.getElementById('ffNameText').innerText = ffName;
+        document.getElementById('ffUidText').innerText = ffUid;
+        document.getElementById('instaHandleText').innerText = insta;
+      } else if (currentModalType === 'reflections') {
+        const quote = document.getElementById('mQuote').value;
+        localStorage.setItem('custom_reflection_quote', quote);
+        document.getElementById('reflectionQuoteText').innerText = quote;
+      }
+
+      closeInfoModal();
+    }
+
+    // --- Custom Photos Management (Owner Only) ---
+    function handleNewPhotoUpload(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      let savedCustomPhotos = JSON.parse(localStorage.getItem('mashrafi_custom_photos') || '[]');
+
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const defaultTitle = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+          const title = prompt('Enter a title for this photo:', defaultTitle) || defaultTitle;
+          const photoObj = {
+            src: e.target.result,
+            title: title,
+            category: 'Personal Collection',
+            desc: 'Curated Portrait • Signature Series',
+            isCustom: true,
+            id: 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5)
+          };
+
+          savedCustomPhotos.push(photoObj);
+          localStorage.setItem('mashrafi_custom_photos', JSON.stringify(savedCustomPhotos));
+          photosData.push(photoObj);
+          renderCustomPhotoCard(photoObj, photosData.length - 1);
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = '';
+    }
+
+    function renderCustomPhotoCard(item, idx) {
+      const grid = document.getElementById('curatedGrid');
+      if (!grid) return;
+
+      const card = document.createElement('div');
+      card.id = 'card_' + item.id;
+      card.className = 'apple-billboard-card p-6 h-[460px] flex flex-col justify-between group cursor-pointer text-center relative';
+      card.onclick = () => openLightboxImage(idx);
+
+      card.innerHTML = `
+        <div data-admin-only class="absolute top-4 right-4 z-20" onclick="event.stopPropagation()">
+          <button onclick="deleteCustomPhoto('${item.id}')" class="w-8 h-8 rounded-full bg-red-600/80 hover:bg-red-500 text-white flex items-center justify-center text-xs shadow-lg transition-transform hover:scale-110" title="Delete Photo">
+            🗑️
+          </button>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold text-white">${item.title}</h3>
+          <p class="text-appleSubtext text-xs mt-1">${item.desc}</p>
+          <span class="apple-link mt-2 inline-block">View Full &gt;</span>
+        </div>
+        <div class="h-72 rounded-2xl overflow-hidden mt-4">
+          <img src="${item.src}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        </div>
+      `;
+
+      grid.appendChild(card);
+      applyAdminModeUI();
+    }
+
+    function deleteCustomPhoto(id) {
+      if (!confirm('Are you sure you want to delete this photo?')) return;
+      let savedCustomPhotos = JSON.parse(localStorage.getItem('mashrafi_custom_photos') || '[]');
+      savedCustomPhotos = savedCustomPhotos.filter(p => p.id !== id);
+      localStorage.setItem('mashrafi_custom_photos', JSON.stringify(savedCustomPhotos));
+      
+      const el = document.getElementById('card_' + id);
+      if (el) el.remove();
+
+      const idx = photosData.findIndex(p => p.id === id);
+      if (idx !== -1) photosData.splice(idx, 1);
+    }
+
+    function loadSavedCustomPhotos() {
+      const saved = JSON.parse(localStorage.getItem('mashrafi_custom_photos') || '[]');
+      saved.forEach((photo) => {
+        photosData.push(photo);
+        renderCustomPhotoCard(photo, photosData.length - 1);
+      });
+    }
+
+    // Load persisted data cleanly without stale placeholders
+    function loadSavedData() {
+      const savedCollege = localStorage.getItem('custom_college_name');
+      if (savedCollege && !savedCollege.includes('Dhaka College')) {
+        document.getElementById('collegeNameText').innerText = savedCollege;
+      }
+      const savedFFUid = localStorage.getItem('custom_ff_uid');
+      if (savedFFUid && savedFFUid !== '2489105432') {
+        document.getElementById('ffUidText').innerText = savedFFUid;
+      }
+      const savedQuote = localStorage.getItem('custom_reflection_quote');
+      if (savedQuote && savedQuote.includes('Assalamu Alaikum')) {
+        document.getElementById('reflectionQuoteText').innerText = savedQuote;
+      }
+      const savedLogo = localStorage.getItem('tamim_college_logo');
+      if (savedLogo) {
+        document.getElementById('collegeLogoImg').src = savedLogo;
+      }
+      loadSavedCustomPhotos();
+      loadReplacedSlotPhotos();
+      loadSavedTitles();
+    }
+
+    loadSavedData();
+    applyAdminModeUI();
+
+    renderLoop();
+
     // ============================================================
-    // VISITOR TRACKING
+    // VISITOR TRACKING & ANALYTICS SYSTEM
     // ============================================================
+
+    // --- Track this visit ---
     function trackVisit() {
       const now = new Date();
-      const todayKey = now.toISOString().slice(0,10);
-      const vid = localStorage.getItem('dr_vid') || (() => { const id = 'v_' + Math.random().toString(36).slice(2,10); localStorage.setItem('dr_vid', id); return id; })();
-      const total = parseInt(localStorage.getItem('dr_total') || '0') + 1;
-      localStorage.setItem('dr_total', total);
-      const todayData = JSON.parse(localStorage.getItem('dr_today') || '{"date":"","count":0}');
+      const todayKey = now.toISOString().slice(0, 10); // YYYY-MM-DD
+      const visitorId = localStorage.getItem('tamim_vid') || (() => {
+        const id = 'v_' + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem('tamim_vid', id);
+        return id;
+      })();
+
+      // Total visits
+      const total = parseInt(localStorage.getItem('tv_total') || '0') + 1;
+      localStorage.setItem('tv_total', total);
+
+      // Today's visits
+      const todayData = JSON.parse(localStorage.getItem('tv_today') || '{"date":"","count":0}');
       const todayCount = todayData.date === todayKey ? todayData.count + 1 : 1;
-      localStorage.setItem('dr_today', JSON.stringify({ date: todayKey, count: todayCount }));
-      const uniques = JSON.parse(localStorage.getItem('dr_uniques') || '[]');
-      if (!uniques.includes(vid)) { uniques.push(vid); localStorage.setItem('dr_uniques', JSON.stringify(uniques)); }
-      localStorage.setItem('dr_last', now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }));
-      const log = JSON.parse(localStorage.getItem('dr_log') || '[]');
+      localStorage.setItem('tv_today', JSON.stringify({ date: todayKey, count: todayCount }));
+
+      // Unique visitors set
+      const uniques = JSON.parse(localStorage.getItem('tv_uniques') || '[]');
+      if (!uniques.includes(visitorId)) {
+        uniques.push(visitorId);
+        localStorage.setItem('tv_uniques', JSON.stringify(uniques));
+      }
+
+      // Last visit time
+      localStorage.setItem('tv_last', now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }));
+
+      // Visitor log entry
+      const log = JSON.parse(localStorage.getItem('tv_log') || '[]');
       log.unshift({
         time: now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
         device: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? '📱 Mobile' : '💻 Desktop',
         browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Firefox') ? 'Firefox' : navigator.userAgent.includes('Safari') ? 'Safari' : 'Other',
         lang: navigator.language || 'Unknown'
       });
-      if (log.length > 50) log.pop();
-      localStorage.setItem('dr_log', JSON.stringify(log));
-      fetch('https://api.counterapi.dev/v1/tamim-portfolio/visits/up').then(r=>r.json()).then(d=>{ if(d&&d.count) localStorage.setItem('dr_real_total', d.count); }).catch(()=>{});
+      if (log.length > 50) log.pop(); // keep last 50
+      localStorage.setItem('tv_log', JSON.stringify(log));
+
+      // Also ping countapi for real cross-device count
+      fetch('https://api.counterapi.dev/v1/tamim-portfolio/visits/up')
+        .then(r => r.json())
+        .then(d => {
+          if (d && d.count) localStorage.setItem('tv_real_total', d.count);
+        }).catch(() => {});
     }
+
     trackVisit();
 
-    function loadAnalytics() {
-      const realTotal = localStorage.getItem('dr_real_total');
-      const total = realTotal || localStorage.getItem('dr_total') || '0';
-      const todayData = JSON.parse(localStorage.getItem('dr_today') || '{"count":0}');
-      const uniques = JSON.parse(localStorage.getItem('dr_uniques') || '[]');
-      const last = localStorage.getItem('dr_last') || '—';
-      const log = JSON.parse(localStorage.getItem('dr_log') || '[]');
-      const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-      setEl('totalVisitCount', total);
-      setEl('todayVisitCount', todayData.count || 0);
-      setEl('uniqueVisitCount', uniques.length);
-      setEl('lastVisitTime', last);
+    // --- Load analytics dashboard (dev mode only) ---
+    function loadAnalyticsDashboard() {
+      const realTotal = localStorage.getItem('tv_real_total');
+      const total = realTotal || localStorage.getItem('tv_total') || '0';
+      const todayData = JSON.parse(localStorage.getItem('tv_today') || '{"count":0}');
+      const uniques = JSON.parse(localStorage.getItem('tv_uniques') || '[]');
+      const last = localStorage.getItem('tv_last') || '—';
+      const log = JSON.parse(localStorage.getItem('tv_log') || '[]');
+
+      // Update stat cards
+      const totalEl = document.getElementById('totalVisitCount');
+      const todayEl = document.getElementById('todayVisitCount');
+      const uniqueEl = document.getElementById('uniqueVisitCount');
+      const lastEl = document.getElementById('lastVisitTime');
+      if (totalEl) totalEl.textContent = total;
+      if (todayEl) todayEl.textContent = todayData.count || 0;
+      if (uniqueEl) uniqueEl.textContent = uniques.length;
+      if (lastEl) lastEl.textContent = last;
+
+      // Visitor log
       const logEl = document.getElementById('visitorLogList');
       if (logEl) {
-        logEl.innerHTML = log.length === 0
-          ? '<div class="px-6 py-8 text-center text-[#86868b] text-sm">No visitor data yet.</div>'
-          : log.map(v => `<div class="px-6 py-3 flex items-center justify-between gap-4"><div class="flex items-center gap-3"><span class="text-lg">${v.device.split(' ')[0]}</span><div><div class="text-white text-xs font-medium">${v.device} · ${v.browser}</div><div class="text-[#86868b] text-xs">${v.lang}</div></div></div><div class="text-[#86868b] text-xs whitespace-nowrap">${v.time}</div></div>`).join('');
+        if (log.length === 0) {
+          logEl.innerHTML = '<div class="px-6 py-8 text-center text-appleSubtext text-sm">No visitor data yet.</div>';
+        } else {
+          logEl.innerHTML = log.map((v, i) => `
+            <div class="px-6 py-3 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <span class="text-lg">${v.device.split(' ')[0]}</span>
+                <div>
+                  <div class="text-white text-xs font-medium">${v.device} · ${v.browser}</div>
+                  <div class="text-appleSubtext text-xs">${v.lang}</div>
+                </div>
+              </div>
+              <div class="text-appleSubtext text-xs whitespace-nowrap">${v.time}</div>
+            </div>
+          `).join('');
+        }
       }
-      const gb = JSON.parse(localStorage.getItem('dr_guestbook') || '[]');
+
+      // Guestbook entries
+      const guestbook = JSON.parse(localStorage.getItem('tv_guestbook') || '[]');
       const gbEl = document.getElementById('guestbookList');
       if (gbEl) {
-        gbEl.innerHTML = gb.length === 0
-          ? '<div class="px-6 py-8 text-center text-[#86868b] text-sm">No guestbook entries yet.</div>'
-          : gb.map(g => `<div class="px-6 py-4"><div class="flex items-start justify-between gap-3"><div><div class="text-white font-semibold text-sm">${g.name||'Anonymous'}</div><div class="text-[#30d5c8] text-xs mt-0.5">${g.email||'—'}</div>${g.msg?`<div class="text-[#86868b] text-xs mt-1 italic">"${g.msg}"</div>`:''}</div><div class="text-[#86868b] text-xs whitespace-nowrap">${g.time}</div></div></div>`).join('');
+        if (guestbook.length === 0) {
+          gbEl.innerHTML = '<div class="px-6 py-8 text-center text-appleSubtext text-sm">No one has signed the guestbook yet.</div>';
+        } else {
+          gbEl.innerHTML = guestbook.map(g => `
+            <div class="px-6 py-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="text-white font-semibold text-sm">${g.name || 'Anonymous'}</div>
+                  <div class="text-appleBlue text-xs mt-0.5">${g.email || '—'}</div>
+                  ${g.msg ? `<div class="text-appleSubtext text-xs mt-1 italic">"${g.msg}"</div>` : ''}
+                </div>
+                <div class="text-appleSubtext text-xs whitespace-nowrap">${g.time}</div>
+              </div>
+            </div>
+          `).join('');
+        }
       }
     }
 
+    // --- Guestbook submit ---
     function submitGuestbook() {
       const name = document.getElementById('gbName').value.trim();
       const email = document.getElementById('gbEmail').value.trim();
       const msg = document.getElementById('gbMessage').value.trim();
       if (!name && !email) { alert('Please enter at least a name or email.'); return; }
-      const gb = JSON.parse(localStorage.getItem('dr_guestbook') || '[]');
-      gb.unshift({ name, email, msg, time: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) });
-      localStorage.setItem('dr_guestbook', JSON.stringify(gb));
+      const guestbook = JSON.parse(localStorage.getItem('tv_guestbook') || '[]');
+      guestbook.unshift({
+        name, email, msg,
+        time: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+      });
+      localStorage.setItem('tv_guestbook', JSON.stringify(guestbook));
       document.getElementById('gbName').value = '';
       document.getElementById('gbEmail').value = '';
       document.getElementById('gbMessage').value = '';
-      const s = document.getElementById('gbSuccess');
-      if (s) { s.classList.remove('hidden'); setTimeout(() => s.classList.add('hidden'), 3000); }
+      const succ = document.getElementById('gbSuccess');
+      if (succ) { succ.classList.remove('hidden'); setTimeout(() => succ.classList.add('hidden'), 3000); }
     }
 
+    // --- Clear functions ---
     function clearVisitorLog() {
       if (confirm('Delete all visitor log entries?')) {
-        ['dr_log','dr_total','dr_today','dr_uniques','dr_last'].forEach(k => localStorage.removeItem(k));
-        loadAnalytics();
+        localStorage.removeItem('tv_log');
+        localStorage.removeItem('tv_total');
+        localStorage.removeItem('tv_today');
+        localStorage.removeItem('tv_uniques');
+        localStorage.removeItem('tv_last');
+        loadAnalyticsDashboard();
       }
     }
+
     function clearGuestbook() {
-      if (confirm('Delete all guestbook entries?')) { localStorage.removeItem('dr_guestbook'); loadAnalytics(); }
+      if (confirm('Delete all guestbook entries?')) {
+        localStorage.removeItem('tv_guestbook');
+        loadAnalyticsDashboard();
+      }
     }
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    loadSavedPhotos();
-    loadSavedTexts();
-    applyAdminModeUI();
-    if (isAdmin) loadAnalytics();
+    // Load dashboard if in admin mode
+    if (isAdmin) loadAnalyticsDashboard();
 
   </script>
+
+  <!-- Floating Developer Control Bar (Only appears when in Developer / Owner Mode) -->
+  <div id="adminBadge" class="fixed bottom-5 right-5 z-40 bg-[#161618]/95 border border-amber-500/50 backdrop-blur-xl px-4 py-2.5 rounded-full items-center gap-3 shadow-2xl text-xs font-mono hidden">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    <span class="text-white font-semibold">👑 Developer Mode</span>
+    <button onclick="document.getElementById('newPhotoUploadInput').click()" class="px-3 py-1 rounded-full bg-blue-600 hover:bg-blue-500 text-white transition-all font-sans text-xs flex items-center gap-1">
+      <span>📷</span>
+      <span>Add Photos</span>
+    </button>
+    <button onclick="copyShareLink()" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all font-sans text-xs" title="Link for father, friends, and visitors (View only)">
+      Copy Visitor Link 📋
+    </button>
+    <button onclick="copyDevLink()" class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all font-sans text-xs" title="Your Developer admin link with edit options">
+      Copy Dev Link 🔑
+    </button>
+    <button onclick="exitAdminMode()" class="text-appleSubtext hover:text-red-400 transition-colors font-sans text-xs ml-1" title="Switch to Visitor View">
+      Exit
+    </button>
+  </div>
 </body>
 </html>
+
+
+
+
+
+
+
