@@ -842,7 +842,10 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
             <span class="text-xs font-mono text-appleGold uppercase tracking-widest">Career & Enterprise</span>
-            <h2 class="text-3xl sm:text-5xl font-bold text-white mt-1 tracking-tight">Business &amp; Trading.</h2>
+            <div class="flex items-center gap-3 flex-wrap mt-1">
+            <h2 id="bizSectionTitle" class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Business &amp; Trading.</h2>
+            <button data-admin-only onclick="var n=prompt('Section title:',document.getElementById('bizSectionTitle').innerText);if(n){document.getElementById('bizSectionTitle').innerText=n;localStorage.setItem('tv_biz_title',n);}" class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono">✏️ Edit</button>
+          </div>
             <p class="text-appleSubtext text-sm mt-2">Entrepreneur by drive, trader by skill — building a future beyond medicine.</p>
           </div>
           <div data-admin-only class="flex items-center gap-3">
@@ -851,6 +854,7 @@
               <span>Add Business Photos</span>
             </button>
             <input type="file" id="bizPhotoInput" accept="image/*" multiple class="hidden" onchange="handleBizPhotoUpload(event)">
+            <input type="file" id="bizReplaceInput" accept="image/*" class="hidden" onchange="executeBizReplace(event)">
           </div>
         </div>
 
@@ -1659,6 +1663,8 @@
       }
 
       loadBizPhotos();
+      const bizTitle = localStorage.getItem("tv_biz_title");
+      if (bizTitle) { const el = document.getElementById("bizSectionTitle"); if(el) el.innerText = bizTitle; }
       loadReplacedSlotPhotos();
       loadSavedTitles();
     }
@@ -1695,19 +1701,55 @@
       const card = document.createElement('div');
       card.className = 'apple-billboard-card overflow-hidden h-[400px] group cursor-pointer relative';
       card.id = 'bizCard_' + photo.id;
+      const caption = photo.caption || 'Business';
       card.innerHTML = `
-        <img src="${photo.src}" alt="Business Photo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-        <div data-admin-only class="absolute top-4 right-4 z-30">
-          <button onclick="deleteBizPhoto('${photo.id}', event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-red-600 border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg">🗑 Remove</button>
+        <img id="bizImg_${photo.id}" src="${photo.src}" alt="Business Photo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+        <div class="absolute top-4 right-4 z-30 flex items-center gap-2 biz-admin-ctrl" style="display:none">
+          <button onclick="renameBizPhoto('${photo.id}', event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">✏️ Rename</button>
+          <button onclick="replaceBizPhoto('${photo.id}', event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-white hover:text-black border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1">📷 Change</button>
+          <button onclick="deleteBizPhoto('${photo.id}', event)" class="px-3 py-1.5 rounded-full bg-black/85 hover:bg-red-600 border border-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all shadow-lg">🗑</button>
         </div>
         <div class="absolute bottom-4 left-4">
           <span class="text-[11px] font-mono text-appleGold uppercase tracking-widest">Business</span>
+          <h4 id="bizCaption_${photo.id}" class="text-white font-bold text-lg mt-0.5">${caption}</h4>
         </div>
       `;
       grid.appendChild(card);
-      if (window.isAdmin) card.querySelector('[data-admin-only]').style.display = 'block';
-      else card.querySelector('[data-admin-only]').style.display = 'none';
+      if (window.isAdmin) card.querySelector('.biz-admin-ctrl').style.display = 'flex';
+    }
+
+    function renameBizPhoto(id, event) {
+      event.stopPropagation();
+      const captionEl = document.getElementById('bizCaption_' + id);
+      const newName = prompt('Enter caption for this photo:', captionEl ? captionEl.innerText : '');
+      if (!newName) return;
+      if (captionEl) captionEl.innerText = newName;
+      let saved = JSON.parse(localStorage.getItem('tamim_biz_photos') || '[]');
+      saved = saved.map(p => p.id === id ? {...p, caption: newName} : p);
+      localStorage.setItem('tamim_biz_photos', JSON.stringify(saved));
+    }
+
+    let _bizReplaceTarget = null;
+    function replaceBizPhoto(id, event) {
+      event.stopPropagation();
+      _bizReplaceTarget = id;
+      document.getElementById('bizReplaceInput').click();
+    }
+    function executeBizReplace(event) {
+      const file = event.target.files[0];
+      if (!file || !_bizReplaceTarget) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imgEl = document.getElementById('bizImg_' + _bizReplaceTarget);
+        if (imgEl) imgEl.src = e.target.result;
+        let saved = JSON.parse(localStorage.getItem('tamim_biz_photos') || '[]');
+        saved = saved.map(p => p.id === _bizReplaceTarget ? {...p, src: e.target.result} : p);
+        localStorage.setItem('tamim_biz_photos', JSON.stringify(saved));
+        _bizReplaceTarget = null;
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
     }
 
     function deleteBizPhoto(id, event) {
@@ -1913,6 +1955,8 @@
   </div>
 </body>
 </html>
+
+
 
 
 
