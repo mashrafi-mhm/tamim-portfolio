@@ -297,7 +297,7 @@
       <div class="max-w-[1024px] mx-auto w-full px-4 flex items-center justify-between h-12">
         
         <!-- Brand -->
-        <a href="#hero" class="flex items-center text-white hover:opacity-75 transition-opacity" title="Mashrafi Hossain">
+        <a href="#hero" class="flex items-center text-white hover:opacity-75 transition-opacity" title="MD. Naimur Rahman Tamim">
           <span class="text-xs font-semibold text-white tracking-tight">MD. Naimur Rahman Tamim</span>
         </a>
 
@@ -307,7 +307,7 @@
           <a href="#section-billboard-2" class="apple-nav-link">Journey</a>
           <a href="#section-grid" class="apple-nav-link">Gallery</a>
           <a href="#section-college" class="apple-nav-link">Medical College</a>
-          <a href="#social" class="apple-nav-link">Business &amp; Medical</a>
+          <a href="#social" class="apple-nav-link">Social</a>
           <a href="#section-business" class="apple-nav-link">Business</a>
           <a href="#section-reflections" class="apple-nav-link">My Specification</a>
         </nav>
@@ -328,7 +328,7 @@
         <a href="#section-billboard-2" class="apple-nav-link whitespace-nowrap">Journey</a>
         <a href="#section-grid" class="apple-nav-link whitespace-nowrap">Gallery</a>
         <a href="#section-college" class="apple-nav-link whitespace-nowrap">Medical College</a>
-        <a href="#social" class="apple-nav-link whitespace-nowrap">Business &amp; Medical</a>
+        <a href="#social" class="apple-nav-link whitespace-nowrap">Social</a>
         <a href="#section-business" class="apple-nav-link whitespace-nowrap">Business</a>
         <a href="#section-reflections" class="apple-nav-link whitespace-nowrap">My Specification</a>
       </div>
@@ -345,11 +345,11 @@
     <section id="hero" class="apple-billboard pt-16 pb-12 text-center flex flex-col items-center">
       <div class="max-w-[1024px] mx-auto px-4 w-full">
         
-        <h1 class="headline-large text-white mb-2">
+        <h1 id="heroNameText" class="headline-large text-white mb-2">
           Naimur Rahman Tamim.
         </h1>
 
-        <p class="headline-sub text-[#a1a1a6] mb-6 font-normal">
+        <p id="heroSubText" class="headline-sub text-[#a1a1a6] mb-6 font-normal">
           Businessman · Trader · MBBS Candidate · Future Cardiologist.
         </p>
 
@@ -591,7 +591,7 @@
             <!-- College Logo / Emblem -->
             <div class="relative group cursor-pointer" onclick="if(window.isAdmin)document.getElementById('collegeLogoInput').click()" title="North East Medical College">
               <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-black/60 border-2 border-amber-500/40 p-2 flex items-center justify-center shadow-2xl shadow-amber-500/20 group-hover:scale-105 transition-transform">
-                <img id="collegeLogoImg" src="assets/photos/hero.jpg" alt="North East Medical College Emblem" class="w-full h-full object-contain drop-shadow">
+                <img id="collegeLogoImg" src="assets/photos/nemc-logo.png" alt="North East Medical College Emblem" class="w-full h-full object-contain drop-shadow">
               </div>
               <span data-admin-only class="absolute -bottom-2 -right-2 w-7 h-7 rounded-full bg-appleGold text-black font-bold text-xs flex items-center justify-center shadow">📷</span>
               <input type="file" id="collegeLogoInput" accept="image/*" class="hidden" onchange="handleCollegeLogoUpload(event)">
@@ -608,7 +608,7 @@
               <p id="collegeDeptText" class="text-appleLightGray text-sm mt-1.5">MBBS Candidate • 2nd Year</p>
               
               <div class="mt-4 flex flex-wrap gap-2 text-xs">
-                <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-appleWhite font-mono">Affiliated: North East Medical College</span>
+                <span id="collegeAffilText" class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-appleWhite font-mono">Affiliated: North East Medical College</span>
                 <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-appleSubtext">Sylhet, Bangladesh</span>
                 <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">MBBS Programme</span>
                 <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-appleGold">Future Cardiologist</span>
@@ -682,7 +682,7 @@
             <!-- Contact Number Box -->
             <div class="my-4 p-4 rounded-2xl bg-black/60 border border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
               <div>
-                <span class="text-[10px] text-appleSubtext uppercase font-mono tracking-wider">WhatsApp Number</span>
+                <span class="text-[10px] text-appleSubtext uppercase font-mono tracking-wider">Number</span>
                 <div id="ffNameText" class="text-white font-black text-lg sm:text-xl tracking-wider mt-0.5 flex items-center gap-2">
                   <span>01315471934</span>
                 </div>
@@ -984,7 +984,7 @@
 
           <div>
             <h4 class="footer-heading">Connect</h4>
-            <a href="https://wa.me/8801315471934" target="_blank" class="footer-link">WhatsApp (+880 1315471934)</a>
+            <a id="footerWaLink" href="https://wa.me/8801315471934" target="_blank" class="footer-link">WhatsApp (+880 1315471934)</a>
             <a id="footerFbLink" href="https://www.facebook.com/" target="_blank" class="footer-link">Facebook</a>
             <a id="footerInstaLink" href="https://www.instagram.com/" target="_blank" class="footer-link">Instagram</a>
             
@@ -1488,42 +1488,145 @@
       const title = document.getElementById('modalTitle');
       const container = document.getElementById('modalFormContainer');
 
+      const curCollege = document.getElementById('collegeNameText') ? document.getElementById('collegeNameText').innerText.trim() : 'North East Medical College';
+      const curDept = document.getElementById('collegeDeptText') ? document.getElementById('collegeDeptText').innerText.trim() : 'MBBS Candidate • 2nd Year';
+      const curAffil = document.getElementById('collegeAffilText') ? document.getElementById('collegeAffilText').innerText.trim() : 'Affiliated: North East Medical College';
+      const curPhone = document.getElementById('ffNameText') ? document.getElementById('ffNameText').innerText.trim() : '01315471934';
+      const curWa = (localStorage.getItem('tamim_wa_number') || '8801315471934');
+      const curFbLink = document.getElementById('fbLink') ? document.getElementById('fbLink').href : 'https://www.facebook.com/';
+      const curFbName = document.getElementById('fbNameText') ? document.getElementById('fbNameText').innerText.trim() : 'Naimur Rahman Tamim';
+      const curInstaLink = document.getElementById('instaLink') ? document.getElementById('instaLink').href : 'https://www.instagram.com/';
+      const curInstaHandle = document.getElementById('instaHandleText') ? document.getElementById('instaHandleText').innerText.trim() : '@tamim';
+      const curQuote = document.getElementById('reflectionQuoteText') ? document.getElementById('reflectionQuoteText').innerText.trim() : '';
+      const curHeroName = document.getElementById('heroNameText') ? document.getElementById('heroNameText').innerText.trim().replace(/\.$/, '') : 'Naimur Rahman Tamim';
+      const curHeroSub = document.getElementById('heroSubText') ? document.getElementById('heroSubText').innerText.trim() : 'Businessman · Trader · MBBS Candidate · Future Cardiologist.';
+
       if (type === 'college') {
         title.innerText = 'Update College Details';
-        container.innerHTML = `
+        container.innerHTML = 
           <div>
             <label class="text-appleSubtext block mb-1">College Name</label>
-            <input type="text" id="mCollegeName" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('collegeNameText').innerText}">
+            <input type="text" id="mCollegeName" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
           </div>
           <div>
-            <label class="text-appleSubtext block mb-1">Class & Group</label>
-            <input type="text" id="mCollegeDept" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('collegeDeptText').innerText}">
+            <label class="text-appleSubtext block mb-1">Programme / Degree</label>
+            <input type="text" id="mCollegeDept" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
           </div>
-        `;
+          <div>
+            <label class="text-appleSubtext block mb-1">Affiliation Badge</label>
+            <input type="text" id="mCollegeAffil" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+          </div>
+        ;
       } else if (type === 'socials') {
-        title.innerText = 'Update Gaming & Social Profiles';
-        container.innerHTML = `
+        title.innerText = 'Update Social & Contact Links';
+        container.innerHTML = 
           <div>
-            <label class="text-appleSubtext block mb-1">Cardiology In-Game Name (IGN)</label>
-            <input type="text" id="mFfName" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('ffNameText').innerText}">
+            <label class="text-appleSubtext block mb-1">Phone / Contact Number</label>
+            <input type="text" id="mPhoneNum" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
           </div>
           <div>
-            <label class="text-appleSubtext block mb-1">Cardiology Player UID</label>
-            <input type="text" id="mFfUid" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('ffUidText').innerText}">
+            <label class="text-appleSubtext block mb-1">WhatsApp Number (e.g. 8801315471934)</label>
+            <input type="text" id="mWaNum" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+          </div>
+          <div>
+            <label class="text-appleSubtext block mb-1">Facebook Profile Link</label>
+            <input type="text" id="mFbLink" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+          </div>
+          <div>
+            <label class="text-appleSubtext block mb-1">Facebook Display Name</label>
+            <input type="text" id="mFbName" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+          </div>
+          <div>
+            <label class="text-appleSubtext block mb-1">Instagram Profile Link</label>
+            <input type="text" id="mInstaLink" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
           </div>
           <div>
             <label class="text-appleSubtext block mb-1">Instagram Handle (@username)</label>
-            <input type="text" id="mInsta" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="${document.getElementById('instaHandleText').innerText}">
+            <input type="text" id="mInstaHandle" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
           </div>
-        `;
+        ;
       } else if (type === 'reflections') {
         title.innerText = 'Update Personal Specification';
-        container.innerHTML = `
+        container.innerHTML = 
           <div>
             <label class="text-appleSubtext block mb-1">Main Specification / Bio</label>
-            <textarea id="mQuote" rows="5" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none font-sans">${document.getElementById('reflectionQuoteText').innerText.trim()}</textarea>
+            <textarea id="mQuote" rows="5" class="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white outline-none font-sans"></textarea>
           </div>
-        `;
+        ;
+      } else if (type === 'settings') {
+        title.innerText = '⚙️ Master Settings & Links';
+        container.innerHTML = 
+          <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+            <div class="border-b border-white/10 pb-3">
+              <span class="text-appleGold font-mono uppercase text-[10px] tracking-wider block mb-2">👤 Profile Header</span>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Full Name</label>
+                  <input type="text" id="mHeroName" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Hero Subtitle</label>
+                  <input type="text" id="mHeroSub" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+              </div>
+            </div>
+
+            <div class="border-b border-white/10 pb-3">
+              <span class="text-emerald-400 font-mono uppercase text-[10px] tracking-wider block mb-2">📞 Contact & Social Links</span>
+              <div class="space-y-2">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-appleSubtext block mb-0.5">Phone Number</label>
+                    <input type="text" id="mPhoneNum" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                  </div>
+                  <div>
+                    <label class="text-appleSubtext block mb-0.5">WhatsApp Number</label>
+                    <input type="text" id="mWaNum" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                  </div>
+                </div>
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Facebook Link</label>
+                  <input type="text" id="mFbLink" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Facebook Name</label>
+                  <input type="text" id="mFbName" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Instagram Link</label>
+                  <input type="text" id="mInstaLink" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Instagram Handle</label>
+                  <input type="text" id="mInstaHandle" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+              </div>
+            </div>
+
+            <div class="border-b border-white/10 pb-3">
+              <span class="text-appleBlue font-mono uppercase text-[10px] tracking-wider block mb-2">🏛️ College & Academics</span>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">College Name</label>
+                  <input type="text" id="mCollegeName" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Programme / Degree</label>
+                  <input type="text" id="mCollegeDept" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+                <div>
+                  <label class="text-appleSubtext block mb-0.5">Affiliation Badge</label>
+                  <input type="text" id="mCollegeAffil" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none" value="">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-purple-400 font-mono uppercase text-[10px] tracking-wider block mb-2">📜 Personal Specification / Bio</span>
+              <textarea id="mQuote" rows="3" class="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none font-sans text-xs"></textarea>
+            </div>
+          </div>
+        ;
       }
 
       document.getElementById('quickEditModal').classList.remove('hidden');
@@ -1534,40 +1637,108 @@
     }
 
     function saveModalInfo() {
-      if (currentModalType === 'college') {
-        const name = document.getElementById('mCollegeName').value;
-        const dept = document.getElementById('mCollegeDept').value;
-        localStorage.setItem('custom_college_name', name);
-        localStorage.setItem('custom_college_dept', dept);
-        document.getElementById('collegeNameText').innerText = name;
-        document.getElementById('collegeDeptText').innerText = dept;
-      } else if (currentModalType === 'socials') {
-        const ffName = document.getElementById('mFfName').value;
-        const ffUid = document.getElementById('mFfUid').value;
-        const insta = document.getElementById('mInsta').value;
+      // 1. Hero Name
+      const elHeroName = document.getElementById('mHeroName');
+      if (elHeroName) {
+        const val = elHeroName.value.trim();
+        localStorage.setItem('tamim_hero_name', val);
+        if (document.getElementById('heroNameText')) document.getElementById('heroNameText').innerText = val + '.';
+        if (document.getElementById('titleHero')) document.getElementById('titleHero').innerText = val;
+      }
 
-        localStorage.setItem('custom_ff_name', ffName);
-        localStorage.setItem('custom_ff_uid', ffUid);
-        localStorage.setItem('custom_insta', insta);
+      // 2. Hero Sub
+      const elHeroSub = document.getElementById('mHeroSub');
+      if (elHeroSub) {
+        const val = elHeroSub.value.trim();
+        localStorage.setItem('tamim_hero_sub', val);
+        if (document.getElementById('heroSubText')) document.getElementById('heroSubText').innerText = val;
+      }
 
-        document.getElementById('ffNameText').innerText = ffName;
-        document.getElementById('ffUidText').innerText = ffUid;
-        document.getElementById('instaHandleText').innerText = insta;
-      } else if (currentModalType === 'reflections') {
-        const quote = document.getElementById('mQuote').value;
-        localStorage.setItem('custom_reflection_quote', quote);
-        document.getElementById('reflectionQuoteText').innerText = quote;
+      // 3. College Info
+      const elCollName = document.getElementById('mCollegeName');
+      if (elCollName) {
+        const val = elCollName.value.trim();
+        localStorage.setItem('tamim_college_name', val);
+        if (document.getElementById('collegeNameText')) document.getElementById('collegeNameText').innerText = val;
+      }
+      const elCollDept = document.getElementById('mCollegeDept');
+      if (elCollDept) {
+        const val = elCollDept.value.trim();
+        localStorage.setItem('tamim_college_dept', val);
+        if (document.getElementById('collegeDeptText')) document.getElementById('collegeDeptText').innerText = val;
+      }
+      const elCollAffil = document.getElementById('mCollegeAffil');
+      if (elCollAffil) {
+        const val = elCollAffil.value.trim();
+        localStorage.setItem('tamim_college_affil', val);
+        if (document.getElementById('collegeAffilText')) document.getElementById('collegeAffilText').innerText = val;
+      }
+
+      // 4. Contact & Socials
+      const elPhone = document.getElementById('mPhoneNum');
+      if (elPhone) {
+        const val = elPhone.value.trim();
+        localStorage.setItem('tamim_phone_number', val);
+        if (document.getElementById('ffNameText')) document.getElementById('ffNameText').innerText = val;
+      }
+      const elWa = document.getElementById('mWaNum');
+      if (elWa) {
+        const clean = elWa.value.trim().replace(/[^0-9]/g, '');
+        localStorage.setItem('tamim_wa_number', clean);
+        if (document.getElementById('ffUidText')) document.getElementById('ffUidText').innerText = '+' + clean;
+        document.querySelectorAll('a[href*="wa.me"]').forEach(el => {
+          el.href = 'https://wa.me/' + clean + '?text=Hello%20Tamim!';
+        });
+        const footWa = document.getElementById('footerWaLink');
+        if (footWa) {
+          footWa.href = 'https://wa.me/' + clean;
+          footWa.innerText = 'WhatsApp (+' + clean + ')';
+        }
+      }
+      const elFbLink = document.getElementById('mFbLink');
+      if (elFbLink) {
+        const val = elFbLink.value.trim();
+        localStorage.setItem('tamim_fb_link', val);
+        if (document.getElementById('fbLink')) document.getElementById('fbLink').href = val;
+        if (document.getElementById('footerFbLink')) document.getElementById('footerFbLink').href = val;
+      }
+      const elFbName = document.getElementById('mFbName');
+      if (elFbName) {
+        const val = elFbName.value.trim();
+        localStorage.setItem('tamim_fb_name', val);
+        if (document.getElementById('fbNameText')) document.getElementById('fbNameText').innerText = val;
+      }
+      const elInstaLink = document.getElementById('mInstaLink');
+      if (elInstaLink) {
+        const val = elInstaLink.value.trim();
+        localStorage.setItem('tamim_insta_link', val);
+        if (document.getElementById('instaLink')) document.getElementById('instaLink').href = val;
+        if (document.getElementById('footerInstaLink')) document.getElementById('footerInstaLink').href = val;
+      }
+      const elInstaHandle = document.getElementById('mInstaHandle');
+      if (elInstaHandle) {
+        const val = elInstaHandle.value.trim();
+        localStorage.setItem('tamim_insta_handle', val);
+        if (document.getElementById('instaHandleText')) document.getElementById('instaHandleText').innerText = val;
+      }
+
+      // 5. Specification / Quote
+      const elQuote = document.getElementById('mQuote');
+      if (elQuote) {
+        const val = elQuote.value.trim();
+        localStorage.setItem('tamim_reflection_quote', val);
+        if (document.getElementById('reflectionQuoteText')) document.getElementById('reflectionQuoteText').innerText = val;
       }
 
       closeInfoModal();
     }
 
-    // --- Custom Photos Management (Owner Only) ---
+        // --- Custom Photos Management (Owner Only) ---
     function handleNewPhotoUpload(event) {
       const files = event.target.files;
       if (!files || files.length === 0) return;
 
-      let savedCustomPhotos = JSON.parse(localStorage.getItem('mashrafi_custom_photos') || '[]');
+      let savedCustomPhotos = JSON.parse(localStorage.getItem('tamim_custom_photos') || '[]');
 
       Array.from(files).forEach((file) => {
         const reader = new FileReader();
@@ -1584,7 +1755,7 @@
           };
 
           savedCustomPhotos.push(photoObj);
-          localStorage.setItem('mashrafi_custom_photos', JSON.stringify(savedCustomPhotos));
+          localStorage.setItem('tamim_custom_photos', JSON.stringify(savedCustomPhotos));
           photosData.push(photoObj);
           renderCustomPhotoCard(photoObj, photosData.length - 1);
         };
@@ -1624,9 +1795,9 @@
 
     function deleteCustomPhoto(id) {
       if (!confirm('Are you sure you want to delete this photo?')) return;
-      let savedCustomPhotos = JSON.parse(localStorage.getItem('mashrafi_custom_photos') || '[]');
+      let savedCustomPhotos = JSON.parse(localStorage.getItem('tamim_custom_photos') || '[]');
       savedCustomPhotos = savedCustomPhotos.filter(p => p.id !== id);
-      localStorage.setItem('mashrafi_custom_photos', JSON.stringify(savedCustomPhotos));
+      localStorage.setItem('tamim_custom_photos', JSON.stringify(savedCustomPhotos));
       
       const el = document.getElementById('card_' + id);
       if (el) el.remove();
@@ -1636,7 +1807,7 @@
     }
 
     function loadSavedCustomPhotos() {
-      const saved = JSON.parse(localStorage.getItem('mashrafi_custom_photos') || '[]');
+      const saved = JSON.parse(localStorage.getItem('tamim_custom_photos') || '[]');
       saved.forEach((photo) => {
         photosData.push(photo);
         renderCustomPhotoCard(photo, photosData.length - 1);
@@ -1645,27 +1816,85 @@
 
     // Load persisted data cleanly without stale placeholders
     function loadSavedData() {
-      const savedCollege = localStorage.getItem('custom_college_name');
+      // 1. Profile / Hero
+      const sHeroName = localStorage.getItem('tamim_hero_name');
+      if (sHeroName) {
+        if (document.getElementById('heroNameText')) document.getElementById('heroNameText').innerText = sHeroName + '.';
+        if (document.getElementById('titleHero')) document.getElementById('titleHero').innerText = sHeroName;
+      }
+      const sHeroSub = localStorage.getItem('tamim_hero_sub');
+      if (sHeroSub) {
+        if (document.getElementById('heroSubText')) document.getElementById('heroSubText').innerText = sHeroSub;
+      }
+
+      // 2. College Details
+      const savedCollege = localStorage.getItem('tamim_college_name') || localStorage.getItem('custom_college_name');
       if (savedCollege && !savedCollege.includes('Dhaka College')) {
         document.getElementById('collegeNameText').innerText = savedCollege;
       }
-      const savedFFUid = localStorage.getItem('custom_ff_uid');
-      if (savedFFUid && savedFFUid !== '2489105432') {
-        document.getElementById('ffUidText').innerText = savedFFUid;
+      const savedDept = localStorage.getItem('tamim_college_dept') || localStorage.getItem('custom_college_dept');
+      if (savedDept) {
+        document.getElementById('collegeDeptText').innerText = savedDept;
       }
-      const savedQuote = localStorage.getItem('custom_reflection_quote');
-      if (savedQuote && savedQuote.includes('Assalamu Alaikum')) {
-        document.getElementById('reflectionQuoteText').innerText = savedQuote;
+      const savedAffil = localStorage.getItem('tamim_college_affil');
+      if (savedAffil && document.getElementById('collegeAffilText')) {
+        document.getElementById('collegeAffilText').innerText = savedAffil;
       }
       const savedLogo = localStorage.getItem('tamim_college_logo');
       if (savedLogo) {
         document.getElementById('collegeLogoImg').src = savedLogo;
+      } else {
+        document.getElementById('collegeLogoImg').src = 'assets/photos/nemc-logo.png';
       }
 
+      // 3. Contact & Socials
+      const savedPhone = localStorage.getItem('tamim_phone_number');
+      if (savedPhone && document.getElementById('ffNameText')) {
+        document.getElementById('ffNameText').innerText = savedPhone;
+      }
+      const savedWa = localStorage.getItem('tamim_wa_number');
+      if (savedWa) {
+        if (document.getElementById('ffUidText')) document.getElementById('ffUidText').innerText = '+' + savedWa;
+        document.querySelectorAll('a[href*="wa.me"]').forEach(el => {
+          el.href = 'https://wa.me/' + savedWa + '?text=Hello%20Tamim!';
+        });
+        const footWa = document.getElementById('footerWaLink');
+        if (footWa) {
+          footWa.href = 'https://wa.me/' + savedWa;
+          footWa.innerText = 'WhatsApp (+' + savedWa + ')';
+        }
+      }
+      const savedFbLink = localStorage.getItem('tamim_fb_link') || localStorage.getItem('tv_fb_link');
+      if (savedFbLink) {
+        if (document.getElementById('fbLink')) document.getElementById('fbLink').href = savedFbLink;
+        if (document.getElementById('footerFbLink')) document.getElementById('footerFbLink').href = savedFbLink;
+      }
+      const savedFbName = localStorage.getItem('tamim_fb_name') || localStorage.getItem('tv_fb_name');
+      if (savedFbName && document.getElementById('fbNameText')) {
+        document.getElementById('fbNameText').innerText = savedFbName;
+      }
+      const savedInstaLink = localStorage.getItem('tamim_insta_link') || localStorage.getItem('tv_insta_link');
+      if (savedInstaLink) {
+        if (document.getElementById('instaLink')) document.getElementById('instaLink').href = savedInstaLink;
+        if (document.getElementById('footerInstaLink')) document.getElementById('footerInstaLink').href = savedInstaLink;
+      }
+      const savedInstaHandle = localStorage.getItem('tamim_insta_handle') || localStorage.getItem('tv_insta');
+      if (savedInstaHandle && document.getElementById('instaHandleText')) {
+        document.getElementById('instaHandleText').innerText = savedInstaHandle;
+      }
+
+      // 4. Specification / Quote
+      const savedQuote = localStorage.getItem('tamim_reflection_quote') || localStorage.getItem('custom_reflection_quote');
+      if (savedQuote && !savedQuote.includes('Assalamu Alaikum')) {
+        document.getElementById('reflectionQuoteText').innerText = savedQuote;
+      }
+
+      // 5. Business Section Title & Photos
       loadBizPhotos();
       const bizTitle = localStorage.getItem("tv_biz_title");
       if (bizTitle) { const el = document.getElementById("bizSectionTitle"); if(el) el.innerText = bizTitle; }
       loadReplacedSlotPhotos();
+      loadSavedCustomPhotos();
       loadSavedTitles();
     }
 
@@ -1939,6 +2168,10 @@
   <div id="adminBadge" class="fixed bottom-5 right-5 z-40 bg-[#161618]/95 border border-amber-500/50 backdrop-blur-xl px-4 py-2.5 rounded-full items-center gap-3 shadow-2xl text-xs font-mono hidden">
     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
     <span class="text-white font-semibold">👑 Developer Mode</span>
+    <button onclick="openInfoModal('settings')" class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all font-sans text-xs flex items-center gap-1" title="Edit all links, numbers, and settings">
+      <span>⚙️</span>
+      <span>Settings & Links</span>
+    </button>
     <button onclick="document.getElementById('newPhotoUploadInput').click()" class="px-3 py-1 rounded-full bg-blue-600 hover:bg-blue-500 text-white transition-all font-sans text-xs flex items-center gap-1">
       <span>📷</span>
       <span>Add Photos</span>
@@ -1955,6 +2188,8 @@
   </div>
 </body>
 </html>
+
+
 
 
 
